@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    liquibase:
+      change-log: classpath:db/changelog/db.changelog-master.yaml
+      enabled: false
+    password: ${POSTGRES_PASSWORD:passwordForHhVolgograd}
+    pool:
+      initial-size: 5
+      max-idle-time: 10s
+    username: ${POSTGRES_USER_NAME:hhVolgograd}
+    url: jdbc:postgresql://localhost:5432/postgres

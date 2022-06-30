@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      relativeToChangelogFile: true
+      file: db.changelog-20220630-01-createTableUsers.yaml
+  - include:
+      relativeToChangelogFile: true
+      file: db.changelog-20220630-02-createTableProfiles.yaml
+  - include:
+      relativeToChangelogFile: true
+      file: db.changelog-20220630-03-createTablePhones.yaml
