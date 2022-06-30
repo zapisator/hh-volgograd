@@ -19,7 +19,7 @@ databaseChangeLog:
                     primaryKey: true
               - column:
                   name: cash
-                  type: money
+                  type: numeric
                   constraints:
                     nullable: false
               - column:
