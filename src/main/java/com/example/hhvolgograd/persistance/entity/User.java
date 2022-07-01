@@ -19,6 +19,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.lang.String.format;
@@ -79,11 +81,25 @@ public class User {
         this.name = name;
         this.age = age;
         this.email = email;
+        this.phones = new HashSet<>();
     }
 
-    public void addProfile(Profile profile) {
+    public User userWithProfile(Profile profile) {
         this.profile = profile;
         profile.setUser(this);
+        return this;
+    }
+
+    public User userWithPhone(Phone phone) {
+        this.phones.add(phone);
+        phone.setUser(this);
+        return this;
+    }
+
+    public User userWithPhones(Collection<Phone> phones) {
+        this.phones.addAll(phones);
+        phones.forEach(phone -> phone.setUser(this));
+        return this;
     }
 
     @Override
