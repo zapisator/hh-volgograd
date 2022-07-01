@@ -20,13 +20,9 @@ databaseChangeLog:
               - column:
                   name: name
                   type: varchar
-                  constraints:
-                    nullable: false
               - column:
                   name: age
                   type: int
-                  constraints:
-                    nullable: false
               - column:
                   name: email
                   type: varchar
