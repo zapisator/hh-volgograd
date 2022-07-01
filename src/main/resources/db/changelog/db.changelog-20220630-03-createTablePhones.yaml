@@ -20,8 +20,6 @@ databaseChangeLog:
               - column:
                   name: value
                   type: varchar
-                  constraints:
-                    nullable: false
               - column:
                   name: &user_id user_id
                   type: bigint
