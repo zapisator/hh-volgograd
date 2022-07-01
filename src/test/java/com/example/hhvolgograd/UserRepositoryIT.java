@@ -24,8 +24,7 @@ import java.util.stream.Stream;
 import static com.example.hhvolgograd.persistance.entity.User.MAX_AGE;
 import static com.example.hhvolgograd.persistance.entity.User.MIN_AGE;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -45,15 +44,31 @@ public class UserRepositoryIT extends RepositoryIT {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "  ", "\t", "\n"})
     public void test_name_mayBeBlankOrNull(String name) {
-        assertDoesNotThrow(() ->
-                userRepository.save(new User(name, VALID_AGE, VALID_EMAIL))
+        val initialUser = new User(name, VALID_AGE, VALID_EMAIL);
+
+        val returnedUser = userRepository.save(new User(name, VALID_AGE, VALID_EMAIL));
+
+        assertAll(
+                () -> assertEquals(initialUser.getName(), returnedUser.getName()),
+                () -> assertEquals(initialUser.getAge(), returnedUser.getAge()),
+                () -> assertEquals(initialUser.getEmail(), returnedUser.getEmail()),
+                () -> assertNotNull(returnedUser.getId())
         );
     }
 
     @ParameterizedTest
     @MethodSource("alphanumericLength")
     public void test_name_isAnyAlphanumeric(String name) {
-        assertDoesNotThrow(() -> userRepository.save(new User(name, VALID_AGE, VALID_EMAIL)));
+        val initialUser = new User(name, VALID_AGE, VALID_EMAIL);
+
+        val returnedUser = userRepository.save(initialUser);
+
+        assertAll(
+                () -> assertEquals(initialUser.getName(), returnedUser.getName()),
+                () -> assertEquals(initialUser.getAge(), returnedUser.getAge()),
+                () -> assertEquals(initialUser.getEmail(), returnedUser.getEmail()),
+                () -> assertNotNull(returnedUser.getId())
+        );
     }
 
     @ParameterizedTest
@@ -67,7 +82,16 @@ public class UserRepositoryIT extends RepositoryIT {
     @ParameterizedTest
     @MethodSource("agesInRange")
     public void test_age_isInRange(int age) {
-        assertDoesNotThrow(() -> userRepository.save(new User(VALID_NAME, age, VALID_EMAIL)));
+        val initialUser = new User(VALID_NAME, age, VALID_EMAIL);
+
+        val returnedUser = userRepository.save(initialUser);
+
+        assertAll(
+                () -> assertEquals(initialUser.getName(), returnedUser.getName()),
+                () -> assertEquals(initialUser.getAge(), returnedUser.getAge()),
+                () -> assertEquals(initialUser.getEmail(), returnedUser.getEmail()),
+                () -> assertNotNull(returnedUser.getId())
+        );
     }
 
     @ParameterizedTest
@@ -89,8 +113,17 @@ public class UserRepositoryIT extends RepositoryIT {
 
     @ParameterizedTest
     @MethodSource("emailValidValues")
-    public void test_email_hasProperCombinations(String name) {
-        assertDoesNotThrow(() -> userRepository.save(new User(name, VALID_AGE, VALID_EMAIL)));
+    public void test_email_hasProperCombinations(String email) {
+        val initialUser = new User(email, VALID_AGE, VALID_EMAIL);
+
+        val returnedUser = userRepository.save(initialUser);
+
+        assertAll(
+                () -> assertEquals(initialUser.getName(), returnedUser.getName()),
+                () -> assertEquals(initialUser.getAge(), returnedUser.getAge()),
+                () -> assertEquals(initialUser.getEmail(), returnedUser.getEmail()),
+                () -> assertNotNull(returnedUser.getId())
+        );
     }
 
     @Test
