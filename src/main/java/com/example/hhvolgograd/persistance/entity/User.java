@@ -37,7 +37,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @NotBlank
     private String name;
     @Min(value = MIN_AGE, message = "Human age could not be less than " + MIN_AGE)
     @Max(value = MAX_AGE, message = "Human age could not be more than " + MAX_AGE)
@@ -80,6 +79,11 @@ public class User {
         this.name = name;
         this.age = age;
         this.email = email;
+    }
+
+    public void addProfile(Profile profile) {
+        this.profile = profile;
+        profile.setUser(this);
     }
 
     @Override
