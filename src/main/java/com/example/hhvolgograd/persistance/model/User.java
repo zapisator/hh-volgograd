@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.entity;
+package com.example.hhvolgograd.persistance.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package com.example.hhvolgograd;
 
-import com.example.hhvolgograd.persistance.entity.Phone;
-import com.example.hhvolgograd.persistance.entity.Profile;
-import com.example.hhvolgograd.persistance.entity.User;
+import com.example.hhvolgograd.persistance.model.Phone;
+import com.example.hhvolgograd.persistance.model.Profile;
+import com.example.hhvolgograd.persistance.model.User;
 import com.example.hhvolgograd.persistance.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.example.hhvolgograd.persistance.entity.User.MAX_AGE;
-import static com.example.hhvolgograd.persistance.entity.User.MIN_AGE;
+import static com.example.hhvolgograd.persistance.model.User.MAX_AGE;
+import static com.example.hhvolgograd.persistance.model.User.MIN_AGE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomUtils.nextDouble;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
@@ -69,6 +69,7 @@ public class RepositoryIT {
         }
 
     }
+
     @Autowired
     private UserRepository userRepository;
 
