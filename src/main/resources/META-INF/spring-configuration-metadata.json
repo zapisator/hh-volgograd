@@ -1,0 +1,20 @@
+{
+  "properties": [
+    {
+      "name": "spring.datasource.liquibase.change-log",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.datasource.liquibase.enabled",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "spring.datasource.pool.initial-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "spring.datasource.pool.max-idle-time",
+      "type": "java.time.Duration"
+    }
+  ]
+}
