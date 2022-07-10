@@ -109,6 +109,8 @@ public class User {
                 ",\n\tname='" + name + '\'' +
                 ",\n\tage=" + age +
                 ",\n\temail='" + email + '\'' +
+                (profile == null ? "" : ",\n\t" + profile) +
+                (phones == null ? "" : ",\n\tphones: [\n" + phones + "\n\t]") +
                 "\n}";
     }
 }
