@@ -1,10 +1,13 @@
 package com.example.hhvolgograd.web.service;
 
+import com.example.hhvolgograd.configuration.Configuration;
+import com.example.hhvolgograd.configuration.JwtProperty;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
@@ -12,16 +15,16 @@ import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = {TokenServiceTest.class})
+@SpringBootTest(classes = {Configuration.class})
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 class TokenServiceTest {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private final JwtProperty jwtProperty;
 
     @Test
     void generate() throws JSONException {
         val email = "a@gmail.com";
-        val tokenService = new TokenServiceImpl(secret);
+        val tokenService = new TokenService(jwtProperty);
 
         val token = tokenService.generate(email);
         val payload = token.split("\\.")[1];
@@ -45,9 +48,9 @@ class TokenServiceTest {
                 + "hZCIsImV4cCI6MTY1NzI1MTM0OSwiaWF0IjoxNjU3MjQ5NTQ5LCJlbWFpbCI6ImFAZ21haWwuY29tIn0"
                 + ".fev00PmRaI90xMNsQQM3VVlRKbot4Y4bMQ9Fbtz8rsI";
         val referenceEmail = "a@gmail.com";
-        val token = new TokenServiceImpl(secret).decode(tokenSerialized);
+        val token = new TokenService(jwtProperty).decode(tokenSerialized);
 
-        val email = token.getClaim(TokenServiceImpl.EMAIL);
+        val email = token.getClaim(TokenService.EMAIL);
 
         assertEquals(referenceEmail, email);
     }
