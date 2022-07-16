@@ -15,6 +15,14 @@
     {
       "name": "spring.datasource.pool.max-idle-time",
       "type": "java.time.Duration"
+    },
+    {
+      "name": "spring.jpa.open-in-view",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String"
     }
   ]
 }
