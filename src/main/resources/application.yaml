@@ -9,7 +9,8 @@ spring:
       max-idle-time: 10s
     username: ${POSTGRES_USER_NAME:hhVolgograd}
     url: jdbc:postgresql://localhost:5432/postgres
-
+  jpa:
+    open-in-view: true
 server:
   port : 8080
 
