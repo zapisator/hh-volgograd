@@ -10,7 +10,9 @@ spring:
     username: ${POSTGRES_USER_NAME:hhVolgograd}
     url: jdbc:postgresql://localhost:5432/postgres
   jpa:
-    open-in-view: true
+    open-in-view: false
+  profiles:
+    active: dev
 server:
   port : 8080
 
@@ -23,7 +25,4 @@ logging:
   level:
     org:
       hibernate:
-        SQL: debug
-        type:
-          descriptor:
-            sql: trace
+        SQL: error
