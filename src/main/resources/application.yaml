@@ -20,3 +20,10 @@ jwt:
 logging:
   file:
     path: ${LOG_HOME:/home/zapisator/hh-volgograd/log}
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace
