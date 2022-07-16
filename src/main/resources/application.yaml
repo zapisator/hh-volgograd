@@ -15,3 +15,7 @@ server:
 
 jwt:
   secret: ${JWT_SECRET:hhVolgogradSecretMustHave32chars+}
+
+logging:
+  file:
+    path: ${LOG_HOME:/home/zapisator/hh-volgograd/log}
