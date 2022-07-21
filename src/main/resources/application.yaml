@@ -27,3 +27,4 @@ logging:
     org:
       hibernate:
         SQL: error
+    root: WARN
