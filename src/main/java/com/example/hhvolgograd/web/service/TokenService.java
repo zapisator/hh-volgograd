@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Date;
 
 @Service
@@ -26,13 +27,15 @@ public class TokenService implements JwtDecoder, TokenGenerator {
     private final JWSAlgorithm algorithm = JWSAlgorithm.HS256;
 
     @Override
+    public String generate(TokenParameter parameters) {
+        return generate(parameters.getEmail(), parameters.getUserId(), parameters.getScope());
+    }
+
+    @Override
     @SneakyThrows
-    public String generate(String email) {
-        val millisecondsInASecond = 1000;
-        val secondsInAMinute = 60;
-        val validityPeriodMillis = 30 * secondsInAMinute * millisecondsInASecond;
+    public String generate(String email, String userId, String scope) {
         val issuedAt = new Date();
-        val expiresAt = new Date(issuedAt.getTime() + validityPeriodMillis);
+        val expiresAt = new Date(issuedAt.getTime() + Duration.ofMinutes(30L).toMillis());
 
         String issuer = "hhVolgograd";
         return SignedJwtBuilder.create()
@@ -41,9 +44,9 @@ public class TokenService implements JwtDecoder, TokenGenerator {
                         .issuer(issuer)
                         .issueTime(issuedAt)
                         .expirationTime(expiresAt)
-                        .subject(email)
+                        .subject(userId)
                         .claim(EMAIL, email)
-                        .claim(SCOPE, email))
+                        .claim(SCOPE, scope))
                 .signature(new MACSigner(jwtProperty.getSecret()))
                 .build()
                 .serialize();
@@ -65,4 +68,5 @@ public class TokenService implements JwtDecoder, TokenGenerator {
                 .issuedAt(claims.getIssueTime().toInstant())
                 .build();
     }
+
 }

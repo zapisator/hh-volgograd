@@ -2,6 +2,7 @@ package com.example.hhvolgograd.web.service;
 
 import com.example.hhvolgograd.configuration.Configuration;
 import com.example.hhvolgograd.configuration.JwtProperty;
+import com.example.hhvolgograd.web.security.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.json.JSONException;
@@ -13,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {Configuration.class})
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
@@ -24,17 +27,25 @@ class TokenServiceTest {
     @Test
     void generate() throws JSONException {
         val email = "a@gmail.com";
+        val userId = Long.toString(1L);
+        val scope = Role.USER.toString();
         val tokenService = new TokenService(jwtProperty);
 
-        val token = tokenService.generate(email);
+        val token = tokenService.generate(
+                TokenParameter.create()
+                        .email(email)
+                        .userId(userId)
+                        .scope(scope)
+                        .build()
+        );
         val payload = token.split("\\.")[1];
         val payloadDecoded = new String(Base64.getDecoder().decode(payload), StandardCharsets.UTF_8);
         val payloadJson = new JSONObject(payloadDecoded);
 
         assertAll(
                 () -> assertEquals(email, payloadJson.getString("email")),
-                () -> assertEquals(email, payloadJson.getString("scope")),
-                () -> assertEquals(email, payloadJson.getString("sub")),
+                () -> assertEquals(scope, payloadJson.getString("scope")),
+                () -> assertEquals(userId, payloadJson.getString("sub")),
                 () -> assertEquals("hhVolgograd", payloadJson.getString("iss")),
                 () -> assertDoesNotThrow(() -> Integer.valueOf(payloadJson.getString("iat"))),
                 () -> assertDoesNotThrow(() -> Integer.valueOf(payloadJson.getString("exp")))
@@ -45,8 +56,8 @@ class TokenServiceTest {
     void decode() {
         val tokenSerialized = "eyJhbGciOiJIUzI1NiJ9"
                 + ".eyJzdWIiOiJhQGdtYWlsLmNvbSIsInNjb3BlIjoiYUBnbWFpbC5jb20iLCJpc3MiOiJoaFZvbGdvZ3J"
-                + "hZCIsImV4cCI6MTY1NzI1MTM0OSwiaWF0IjoxNjU3MjQ5NTQ5LCJlbWFpbCI6ImFAZ21haWwuY29tIn0"
-                + ".fev00PmRaI90xMNsQQM3VVlRKbot4Y4bMQ9Fbtz8rsI";
+                + "hZCIsImV4cCI6MTk3Mjc2Mjg4NCwiaWF0IjoxNjU3NDAyODg0LCJlbWFpbCI6ImFAZ21haWwuY29tIn0"
+                + ".dX7sfWuwDtEzvNMxMQt33xmG57Yc-0CriV-tNv8pwTY";
         val referenceEmail = "a@gmail.com";
         val token = new TokenService(jwtProperty).decode(tokenSerialized);
 
