@@ -44,7 +44,7 @@ public class User {
     @Max(value = MAX_AGE, message = "Human age could not be more than " + MAX_AGE)
     private int age;
     @Column(unique = true)
-    @NotNull
+    @NotBlank(message = "Name may not be blank")
     @Pattern(
             regexp = "^[-a-z0-9!#$%&'*+/=?^_`{|}~]+"
                     + "(\\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@([a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\\.)"
