@@ -1,15 +1,15 @@
 services:
 
   hazelcast-management-center:
-    image: hazelcast/management-center:latest
     environment:
-      - LOGGING_LEVEL=INFO
-      - MAX_HEAP_SIZE='512M'
-      - JAVA_OPTS=
+      LOGGING_LEVEL: INFO
+      MAX_HEAP_SIZE: '512M'
+      JAVA_OPTS:
         -Xms512m 
         -Dhazelcast.mc.http.port=9080 
         -Dhazelcast.mc.https.port=9443
-      - MC_INIT_CMD=~/bin/mc-conf.sh cluster add -ma hazelcast-member:5701 -cn dev -v
+      MC_INIT_CMD: ~/bin/mc-conf.sh cluster add -ma hazelcast-member:5701 -cn dev -v
+    image: hazelcast/management-center:latest
     ports:
       - "9080:9080"
 
