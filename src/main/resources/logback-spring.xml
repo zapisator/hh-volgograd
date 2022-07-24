@@ -2,7 +2,7 @@
 <configuration>
 
     <springProperty name="LOG_HOME" source="logging.file.path"/>
-    <property name="FILE_LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <property name="FILE_LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] [%-5level] %logger{36} - %msg%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
