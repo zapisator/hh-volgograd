@@ -1,9 +1,9 @@
 package com.example.hhvolgograd;
 
-import com.example.hhvolgograd.persistance.model.Phone;
-import com.example.hhvolgograd.persistance.model.Profile;
-import com.example.hhvolgograd.persistance.model.User;
-import com.example.hhvolgograd.persistance.repository.UserRepository;
+import com.example.hhvolgograd.persistance.db.model.Phone;
+import com.example.hhvolgograd.persistance.db.model.Profile;
+import com.example.hhvolgograd.persistance.db.model.User;
+import com.example.hhvolgograd.persistance.db.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.jupiter.api.Test;

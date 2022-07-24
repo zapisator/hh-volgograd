@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.model;
+package com.example.hhvolgograd.persistance.db.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
