@@ -1,0 +1,7 @@
+hazelcast-client:
+  cluster-name: dev
+  instance-name: hh-volgograd-client
+  network:
+    cluster-members:
+      - localhost:5701
+    redo-operation: false
