@@ -3,7 +3,7 @@ services:
   hazelcast-management-center:
     environment:
       JAVA_OPTS:
-        -Dhazelcast.mc.http.port=9080 
+        -Dhazelcast.mc.http.port=9080
         -Dhazelcast.mc.https.port=9443
         -Xms512m
       LOGGING_LEVEL: INFO
@@ -14,9 +14,11 @@ services:
       - "9080:9080"
 
   hazelcast-member:
+    environment:
+      HZ_NETWORK_PUBLICADDRESS: localhost:5701
     image: hazelcast/hazelcast:latest
     ports:
-      - "5701"
+      - "5701:5701"
 
   postgres:
     command: [ "postgres", "-c", "log_statement=all", "-c", "log_destination=stderr" ]
