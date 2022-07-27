@@ -6,7 +6,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 
 @Service
-@EnableConfigurationProperties({JwtProperty.class})
+@EnableConfigurationProperties({
+        JwtProperty.class,
+        ProjectMailProperty.class
+})
 @RequiredArgsConstructor
 @Getter
 public class Configuration {
