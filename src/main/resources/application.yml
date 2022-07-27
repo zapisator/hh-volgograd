@@ -8,7 +8,11 @@ logging:
     org:
       hibernate:
         SQL: error
-    root: WARN
+    root: info
+
+project:
+  mail:
+    from: ${MAIL_FROM}
 
 server:
   port : 8080
@@ -47,6 +51,6 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-  hazelcast:
-    config: classpath:hazelcast-client.yaml
+  profiles:
+    active: dev
 
