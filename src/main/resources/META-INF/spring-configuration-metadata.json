@@ -1,5 +1,10 @@
 {
   "properties": [
+
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String"
+    },
     {
       "name": "spring.datasource.liquibase.change-log",
       "type": "java.lang.String"
