@@ -28,9 +28,11 @@ public class SecurityFilterChainImpl {
                 )
                 .authorizeRequests(
                         authorizeRequestsConfigurer -> authorizeRequestsConfigurer
-                                .antMatchers(HttpMethod.GET, "/auth/login**").permitAll()
-                                .anyRequest().authenticated()
-                                .and()
+                                .antMatchers(HttpMethod.POST,
+                                        "/auth/registration/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
                 )
                 .build();
     }
