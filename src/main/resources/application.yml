@@ -26,8 +26,22 @@ spring:
     username: ${POSTGRES_USER_NAME:hhVolgograd}
   jpa:
     open-in-view: false
-  profiles:
-    active: dev
+  mail:
+    debug: true
+    host: ${MAIL_HOST}
+    password: ${MAIL_PASSWORD}
+    port: "${MAIL_PORT}"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+    transport:
+      protocol: smtp
+    username: ${MAIL_USERNAME}
   main:
     banner-mode: off
   output:
