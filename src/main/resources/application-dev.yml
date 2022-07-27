@@ -2,9 +2,10 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: debug
         type:
           descriptor:
-            sql: TRACE
+            sql: trace
       springframework:
-        security: DEBUG
+        security: debug
+    root: debug
