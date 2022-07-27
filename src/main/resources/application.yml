@@ -15,7 +15,7 @@ project:
     from: ${MAIL_FROM}
 
 server:
-  port : 8080
+  port: 8080
 
 spring:
   datasource:
