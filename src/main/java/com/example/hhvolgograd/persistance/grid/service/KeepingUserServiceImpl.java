@@ -18,7 +18,7 @@ public class KeepingUserServiceImpl implements KeepingUserService {
     private final IMap<String, String> map;
 
     @Autowired
-    private KeepingUserServiceImpl(HazelcastManager factory) {
+    public KeepingUserServiceImpl(HazelcastManager factory) {
         this.map = factory.getInstance().getMap(mapName);
     }
     @Override
