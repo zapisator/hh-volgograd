@@ -32,9 +32,9 @@ spring:
     open-in-view: false
   mail:
     debug: true
-    host: ${MAIL_HOST}
+    host: ${MAIL_HOST:smtp.rambler.ru}
     password: ${MAIL_PASSWORD}
-    port: "${MAIL_PORT}"
+    port: "${MAIL_PORT:465}"
     properties:
       mail:
         smtp:
