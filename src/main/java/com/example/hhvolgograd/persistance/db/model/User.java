@@ -1,5 +1,7 @@
 package com.example.hhvolgograd.persistance.db.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -112,6 +114,10 @@ public class User {
                 (profile == null ? "" : ",\n\t" + profile) +
                 (phones == null ? "" : ",\n\tphones: [\n" + phones + "\n\t]") +
                 "\n}";
+    }
+
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(this);
     }
 }
 

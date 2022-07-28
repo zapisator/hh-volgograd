@@ -28,22 +28,18 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final KeepingUserService keepingUserService;
     private final MailService mailService;
 
-    @Override
     @SneakyThrows
-    public String register(User user) {
+    public void register(User user) {
         val email = user.getEmail();
+        val userJson = user.toJson();
 
         checkNoSuchEmailIsRegistered(email);
-        val userJson = new ObjectMapper().writeValueAsString(user);
         log.debug("User to send:\n{}", userJson);
         keepingUserService.save(email, userJson);
-
 
         val otp = otpService.save(email);
         log.debug("otp '{}'", otp);
         mailService.send(email, otp);
-
-        return "Registration OK";
     }
 
     @Override

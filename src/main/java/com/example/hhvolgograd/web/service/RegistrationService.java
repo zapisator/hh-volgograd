@@ -4,7 +4,7 @@ import com.example.hhvolgograd.persistance.db.model.User;
 
 public interface RegistrationService {
 
-    String register(User user);
+    void register(User user);
 
     void confirmRegistration(String email, String otp);
 }
