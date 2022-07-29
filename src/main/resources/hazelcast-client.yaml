@@ -3,5 +3,5 @@ hazelcast-client:
     instance-name: hh-volgograd-client
     network:
       cluster-members:
-        - "localhost:5701"
+        - "localhost"
       redo-operation: false
