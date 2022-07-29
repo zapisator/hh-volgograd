@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.InputStreamResource;
+import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
@@ -45,11 +46,18 @@ class KeepingUserServiceImplTest {
     private KeepingUserService service;
 
     @Container
-    public static GenericContainer<?> hazelcastMemberContainer = new GenericContainer<>("hazelcast/hazelcast:latest")
-            .withExposedPorts(5701)
-            .withEnv("HZ_NETWORK_PUBLICADDRESS", "localhost:5701")
-            .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(KeepingUserServiceImplTest.class)))
-            .withAccessToHost(true);
+    public static GenericContainer<?> hazelcastMemberContainer;
+
+    static {
+        int hostPort = 5701;
+        int containerExposedPort = 5701;
+
+        hazelcastMemberContainer = new FixedHostPortGenericContainer<>("hazelcast/hazelcast:latest")
+                .withFixedExposedPort(hostPort, containerExposedPort)
+                .withEnv("HZ_NETWORK_PUBLICADDRESS", "localhost:5701")
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(KeepingUserServiceImplTest.class)))
+                .withAccessToHost(true);
+    }
 
 
     @BeforeEach
@@ -114,7 +122,9 @@ class KeepingUserServiceImplTest {
     }
 
     @Test
-    void save_afterHaveAlreadyBeenSavedAndNotYetExpired_throws() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
+    void save_afterHaveAlreadyBeenSavedAndNotYetExpired_throws()
+            throws NoSuchFieldException, IllegalAccessException, InterruptedException
+    {
         val email = randomAlphanumeric(20);
         val userJson = randomAlphanumeric(20);
         val secondsLessThanStorageTime = new Random().nextInt(KeepingUserServiceImpl.storageTime);
