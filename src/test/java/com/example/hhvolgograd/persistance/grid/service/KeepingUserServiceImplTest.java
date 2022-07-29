@@ -14,16 +14,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.InputStreamResource;
-import org.testcontainers.containers.FixedHostPortGenericContainer;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -33,6 +32,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import static java.io.File.separator;
 import static java.lang.Thread.sleep;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -46,19 +46,18 @@ class KeepingUserServiceImplTest {
     private KeepingUserService service;
 
     @Container
-    public static GenericContainer<?> hazelcastMemberContainer;
+    public static DockerComposeContainer<?> hazelcastMemberContainer;
 
     static {
-        int hostPort = 5701;
-        int containerExposedPort = 5701;
+        val containerExposedPort = 5701;
+        val path = System.getProperty("user.dir") + separator + "containers" + separator + "docker-compose.yaml";
+        val file = new File(path);
+        val serviceName = "hazelcast-member";
 
-        hazelcastMemberContainer = new FixedHostPortGenericContainer<>("hazelcast/hazelcast:latest")
-                .withFixedExposedPort(hostPort, containerExposedPort)
-                .withEnv("HZ_NETWORK_PUBLICADDRESS", "localhost:5701")
-                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(KeepingUserServiceImplTest.class)))
-                .withAccessToHost(true);
+        hazelcastMemberContainer = new DockerComposeContainer<>(file)
+                .withExposedService(serviceName, containerExposedPort, Wait.forListeningPort());
+        hazelcastMemberContainer.start();
     }
-
 
     @BeforeEach
     public void setUp() {
@@ -66,9 +65,6 @@ class KeepingUserServiceImplTest {
         val clientConfig = clientConfig(properties);
         val instance = HazelcastClient.newHazelcastClient(clientConfig);
 
-        if (!hazelcastMemberContainer.isRunning()) {
-            hazelcastMemberContainer.start();
-        }
         factory = new HazelcastManager(instance);
         service = new KeepingUserServiceImpl(factory);
     }
@@ -211,9 +207,7 @@ class KeepingUserServiceImplTest {
     }
 
     private Properties properties() {
-        try (
-                InputStream input = this.getClass().getClassLoader().getResourceAsStream("hazelcast-client.yaml")
-        ) {
+        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("hazelcast-client.yaml")) {
             val yamlProcessor = new YamlPropertiesFactoryBean();
 
             yamlProcessor.setResources(new InputStreamResource(requireNonNull(input)));
