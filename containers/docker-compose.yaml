@@ -5,7 +5,7 @@ services:
       JAVA_OPTS:
         -Dhazelcast.mc.http.port=9080
         -Dhazelcast.mc.https.port=9443
-        -Xms512m
+        -Xmx512m
       LOGGING_LEVEL: INFO
       MAX_HEAP_SIZE: '512M'
       MC_INIT_CMD: ~/bin/mc-conf.sh cluster add -ma hazelcast-member:5701 -cn dev -v
@@ -15,7 +15,8 @@ services:
 
   hazelcast-member:
     environment:
-      HZ_NETWORK_PUBLICADDRESS: localhost:5701
+      JAVA_OPTS:
+        -Xmx512m
     image: hazelcast/hazelcast:latest
     ports:
       - "5701:5701"
