@@ -1,5 +1,6 @@
 package com.example.hhvolgograd.persistance.db.model;
 
+import com.example.hhvolgograd.exception.IncorrectJsonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -70,6 +71,14 @@ public class User {
             mappedBy = "user"
     )
     private Set<Phone> phones;
+
+    public static User fromJson(String userJson) {
+        try {
+            return new ObjectMapper().readValue(userJson, User.class);
+        } catch (JsonProcessingException e) {
+            throw new IncorrectJsonException(format("The string '%s' is incorrect", userJson), e);
+        }
+    }
 
     public User(String name, int age, String email) {
         if (MAX_AGE < 0 || MIN_AGE >= MAX_AGE) {
