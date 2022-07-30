@@ -1,6 +1,8 @@
 package com.example.hhvolgograd.persistance.grid.service;
 
+import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.exception.TooEarlyToContactServiceException;
+import com.example.hhvolgograd.persistance.db.model.User;
 import com.hazelcast.map.IMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +30,17 @@ public class KeepingUserServiceImpl implements KeepingUserService {
     }
 
     @Override
-    public Optional<String> findUserByEmail(String email) {
-        return Optional.ofNullable(map.get(email));
+    public User getUserOrThrow(String email) {
+        return Optional
+                .ofNullable(map.get(email))
+                .map(User::fromJson)
+                .orElseThrow(
+                        () -> new NotRegisteringUserException(format(
+                                "User with email '%s' is not registering, "
+                                        + "or too much time spent after register form was sent. Try again to register.",
+                                email
+                        ))
+                );
     }
 
     private void checkCallIsInTime(String email) {

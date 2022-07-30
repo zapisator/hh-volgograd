@@ -1,6 +1,6 @@
 package com.example.hhvolgograd.persistance.grid.service;
 
-import java.util.Optional;
+import com.example.hhvolgograd.persistance.db.model.User;
 
 public interface KeepingUserService {
 
@@ -8,7 +8,6 @@ public interface KeepingUserService {
 
     void save(String email, String userJson);
 
-    Optional<String> findUserByEmail(String email);
-
+    User getUserOrThrow(String email);
 
 }

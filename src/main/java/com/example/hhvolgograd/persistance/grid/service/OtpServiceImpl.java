@@ -4,6 +4,7 @@ import com.example.hhvolgograd.exception.TooEarlyToContactServiceException;
 import com.hazelcast.map.IMap;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class OtpServiceImpl implements OtpService {
     public OtpServiceImpl(HazelcastManager factory) {
         this.map = factory.getInstance().getMap(mapName);
     }
+
     @Override
     public String save(String email) {
         val otp = UUID.randomUUID().toString();
@@ -30,11 +32,6 @@ public class OtpServiceImpl implements OtpService {
         checkCallIsInTime(email);
         map.put(email, otp, storageTime, unit);
         return otp;
-    }
-
-    @Override
-    public Optional<String> findOtpByEmail(String email) {
-        return Optional.ofNullable(map.get(email));
     }
 
     private void checkCallIsInTime(String email) {
@@ -47,5 +44,15 @@ public class OtpServiceImpl implements OtpService {
                     )
             );
         }
+    }
+
+    @Override
+    public String getOtpOrThrow(String email) {
+        return Optional
+                .ofNullable(map.get(email))
+                .orElseThrow(() -> new UsernameNotFoundException(format(
+                        "User with email '%s' was not found in the registration storage",
+                        email))
+                );
     }
 }

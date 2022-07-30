@@ -128,21 +128,21 @@ class KeepingUserServiceImplTest {
 
     @ParameterizedTest
     @NullSource
-    void findUserByEmail_throwsOnNull(String email) {
-        assertThrows(NullPointerException.class, () -> service.findUserByEmail(email));
+    void getUserOrThrow_throwsOnNull(String email) {
+        assertThrows(NullPointerException.class, () -> service.getUserOrThrow(email));
     }
 
     @ParameterizedTest
     @EmptySource
     @ValueSource(strings = {" ", "  "})
-    void findUserByEmail_onEmptyOrWhitespace_ok(String email) {
-        assertDoesNotThrow(() -> service.findUserByEmail(email));
+    void getUserOrThrow_onEmptyOrWhitespace_ok(String email) {
+        assertDoesNotThrow(() -> service.getUserOrThrow(email));
     }
 
     @RepeatedTest(100)
-    void findUserByEmail_onAnySingleEmail_ok() {
+    void getUserOrThrow_onAnySingleEmail_ok() {
         val email = RandomStringUtils.random(new Random().nextInt(100));
 
-        assertDoesNotThrow(() -> service.findUserByEmail(email));
+        assertDoesNotThrow(() -> service.getUserOrThrow(email));
     }
 }

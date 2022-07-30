@@ -1,5 +1,7 @@
 package com.example.hhvolgograd.web.service;
 
+import com.example.hhvolgograd.TestUtils;
+import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.mail.service.MailService;
 import com.example.hhvolgograd.persistance.db.model.User;
 import com.example.hhvolgograd.persistance.db.service.CashService;
@@ -17,14 +19,16 @@ import org.mockito.MockedStatic;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.Optional;
-import java.util.Random;
+import java.util.stream.Stream;
 
+import static com.example.hhvolgograd.TestUtils.randomStringWithNonZeroLength;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -73,8 +77,9 @@ class RegistrationServiceImplTest {
         doNothing()
                 .when(mailService)
                 .send(anyString(), anyString());
-        when(cashService.existsUserByEmail(anyString()))
-                .thenReturn(true);
+        doThrow(new DuplicateKeyException(format("User with '%s' email has already registered.", userEmail)))
+                .when(cashService)
+                .checkIfNoSuchEmailIsRegistered(anyString());
 
         assertThrows(DuplicateKeyException.class, () -> registrationService.register(user));
     }
@@ -98,14 +103,15 @@ class RegistrationServiceImplTest {
         doNothing()
                 .when(mailService)
                 .send(anyString(), anyString());
-        when(cashService.existsUserByEmail(anyString()))
-                .thenReturn(false);
+        doNothing()
+                .when(cashService)
+                .checkIfNoSuchEmailIsRegistered(anyString());
 
         assertDoesNotThrow(() -> registrationService.register(user));
         verify(keepingUserService, times(1)).save(anyString(), anyString());
         verify(otpService, times(1)).save(anyString());
         verify(mailService, times(1)).send(anyString(), anyString());
-        verify(cashService, times(1)).existsUserByEmail(anyString());
+        verify(cashService, times(1)).checkIfNoSuchEmailIsRegistered(anyString());
     }
 
     @Test
@@ -130,8 +136,13 @@ class RegistrationServiceImplTest {
         val otp = randomStringWithNonZeroLength();
         val registrationService = new RegistrationServiceImpl(cashService, otpService, keepingUserService, mailService);
 
-        when(otpService.findOtpByEmail(anyString()))
-                .thenReturn(Optional.empty());
+        doThrow(
+                new UsernameNotFoundException(format(
+                        "User with email '%s' was not found in the registration storage",
+                        email))
+        )
+                .when(otpService)
+                .getOtpOrThrow(anyString());
 
         assertThrows(UsernameNotFoundException.class, () -> registrationService.confirmRegistration(email, otp));
     }
@@ -143,8 +154,8 @@ class RegistrationServiceImplTest {
         val otp2 = differentOtp(otp1);
         val registrationService = new RegistrationServiceImpl(cashService, otpService, keepingUserService, mailService);
 
-        when(otpService.findOtpByEmail(anyString()))
-                .thenReturn(Optional.of(otp2));
+        when(otpService.getOtpOrThrow(anyString()))
+                .thenReturn(otp2);
 
         assertThrows(UsernameNotFoundException.class, () -> registrationService.confirmRegistration(email, otp1));
     }
@@ -155,10 +166,17 @@ class RegistrationServiceImplTest {
         val otp = randomStringWithNonZeroLength();
         val registrationService = new RegistrationServiceImpl(cashService, otpService, keepingUserService, mailService);
 
-        when(otpService.findOtpByEmail(anyString()))
-                .thenReturn(Optional.of(otp));
-        when(keepingUserService.findUserByEmail(anyString()))
-                .thenReturn(Optional.empty());
+        doNothing()
+                .when(otpService)
+                .getOtpOrThrow(anyString());
+        doThrow(
+                new NotRegisteringUserException(format(
+                        "User with email '%s' is not registering, "
+                                + "or too much time spent after register form was sent. Try again to register.",
+                        email
+                ))
+        )
+                .when(keepingUserService.getUserOrThrow(anyString()));
 
         assertThrows(UsernameNotFoundException.class, () -> registrationService.confirmRegistration(email, otp));
     }
@@ -167,21 +185,21 @@ class RegistrationServiceImplTest {
     void confirmRegistration_ok() {
         val email = "a@a.com";
         val user = mock(User.class);
-        val userJson = randomStringWithNonZeroLength();
         val otp = randomStringWithNonZeroLength();
         val registrationService = new RegistrationServiceImpl(cashService, otpService, keepingUserService, mailService);
 
         try (final MockedStatic<User> userStatic = mockStatic(User.class)) {
-            when(otpService.findOtpByEmail(anyString()))
-                    .thenReturn(Optional.of(otp));
-            when(keepingUserService.findUserByEmail(anyString()))
-                    .thenReturn(Optional.of(userJson));
+            doNothing()
+                    .when(otpService)
+                    .getOtpOrThrow(anyString());
+            when(keepingUserService.getUserOrThrow(anyString()))
+                    .thenReturn(user);
             when(cashService.save(any())).thenReturn(user);
             userStatic.when(() -> User.fromJson(anyString())).thenReturn(user);
             registrationService.confirmRegistration(email, otp);
 
-            verify(otpService, times(1)).findOtpByEmail(anyString());
-            verify(keepingUserService, times(1)).findUserByEmail(anyString());
+            verify(otpService, times(1)).getOtpOrThrow(anyString());
+            verify(keepingUserService, times(1)).getUserOrThrow(anyString());
             verify(cashService, times(1)).save(any());
             userStatic.verify(() -> User.fromJson(anyString()), times(1));
         }
