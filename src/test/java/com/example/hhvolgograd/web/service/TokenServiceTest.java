@@ -3,6 +3,8 @@ package com.example.hhvolgograd.web.service;
 import com.example.hhvolgograd.configuration.Configuration;
 import com.example.hhvolgograd.configuration.JwtProperty;
 import com.example.hhvolgograd.web.security.Role;
+import com.example.hhvolgograd.web.security.TokenParameter;
+import com.example.hhvolgograd.web.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.json.JSONException;

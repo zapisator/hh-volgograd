@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service;
+package com.example.hhvolgograd.web.security;
 
 import com.example.hhvolgograd.configuration.JwtProperty;
 import com.nimbusds.jose.JWSAlgorithm;
