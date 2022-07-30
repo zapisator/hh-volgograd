@@ -6,5 +6,9 @@ public interface CashService {
 
     void checkIfNoSuchEmailIsRegistered(String email);
 
+    void checkIfEmailIsRegistered(String email);
+
+    User findUserByEmail(String email);
+
     User save(User user);
 }
