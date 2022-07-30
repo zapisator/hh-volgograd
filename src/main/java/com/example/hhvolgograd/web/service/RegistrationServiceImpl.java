@@ -66,13 +66,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private User getUserOrThrow(String email) {
         return keepingUserService
                 .findUserByEmail(email)
-                .map(userJson -> {
-                    try {
-                        return new ObjectMapper().readValue(userJson, User.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(User::fromJson)
                 .orElseThrow(
                         () -> new NotRegisteringUserException(format(
                                 "User with email '%s' is not registering, "
