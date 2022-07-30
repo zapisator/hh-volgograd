@@ -214,8 +214,5 @@ class RegistrationServiceImplTest {
                 .orElseThrow();
     }
 
-    private String randomStringWithNonZeroLength() {
-        return RandomStringUtils.random(1 + new Random().nextInt(99));
-    }
 
 }
