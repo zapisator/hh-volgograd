@@ -206,13 +206,12 @@ class RegistrationServiceImplTest {
 
     }
 
-    private String differentOtp(String otp1) {
-        var otp2 = randomStringWithNonZeroLength();
-
-        while (otp2.equals(otp1)) {
-            otp2 = randomStringWithNonZeroLength();
-        }
-        return otp2;
+    private String differentOtp(final String otp1) {
+        return Stream.generate(TestUtils::randomStringWithNonZeroLength)
+                .limit(10)
+                .filter(otp2 -> !otp1.equals(otp2))
+                .findFirst()
+                .orElseThrow();
     }
 
     private String randomStringWithNonZeroLength() {
