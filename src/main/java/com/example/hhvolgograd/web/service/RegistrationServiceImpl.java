@@ -6,8 +6,6 @@ import com.example.hhvolgograd.persistance.db.model.User;
 import com.example.hhvolgograd.persistance.db.service.CashService;
 import com.example.hhvolgograd.persistance.grid.service.KeepingUserService;
 import com.example.hhvolgograd.persistance.grid.service.OtpService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
