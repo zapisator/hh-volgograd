@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 @Service
 @AllArgsConstructor
@@ -44,6 +45,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void confirmRegistration(String email, String otp) {
+        requireNonNull(email, "Email could not be null");
+        requireNonNull(otp, "Otp could not be null");
         checkIfOtpIsCorrect(email, otp);
         val user = getUserOrThrow(email);
         cashService.save(user);
