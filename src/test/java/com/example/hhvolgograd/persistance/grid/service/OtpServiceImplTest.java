@@ -60,7 +60,6 @@ class OtpServiceImplTest {
         );
     }
 
-
     @ParameterizedTest
     @EmptySource
     @ValueSource(strings = {" ", "  "})
