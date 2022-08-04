@@ -11,6 +11,9 @@ logging:
     root: info
 
 project:
+  hazelcast:
+    otp-storage-duration: 30s
+    keep-user-storage-duration: 10m
   mail:
     from: ${MAIL_FROM}
 
