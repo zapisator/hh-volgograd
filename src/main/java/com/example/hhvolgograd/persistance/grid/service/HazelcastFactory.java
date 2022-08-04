@@ -17,7 +17,7 @@ public class HazelcastFactory {
     private final HazelcastInstance instance;
     private final ProjectHazelcastProperty hazelcastProperty;
 
-    public HazelcastMapServiceImpl createInstance(HazelcastMapServiceType type) {
+    public HazelcastMapService createInstance(HazelcastMapServiceType type) {
         final IMap<String, String> map = instance.getMap(type.getMapName());
         final Duration duration;
 
