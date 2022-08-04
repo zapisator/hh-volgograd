@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.grid.service;
+package com.example.hhvolgograd;
 
 import lombok.val;
 import org.testcontainers.containers.DockerComposeContainer;
