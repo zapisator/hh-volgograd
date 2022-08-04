@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableConfigurationProperties({
         JwtProperty.class,
-        ProjectMailProperty.class
+        ProjectMailProperty.class,
+        ProjectHazelcastProperty.class
 })
 @RequiredArgsConstructor
 @Getter
 public class Configuration {
 
     private final JwtProperty jwtProperty;
+    private final ProjectMailProperty projectMailProperty;
+    private final ProjectHazelcastProperty projectHazelcastProperty;
 }
