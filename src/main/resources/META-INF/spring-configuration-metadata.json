@@ -6,6 +6,14 @@
       "type": "java.lang.String"
     },
     {
+      "name": "project.hazelcast.otp-storage-duration",
+      "type": "java.time.Duration"
+    },
+    {
+      "name": "project.hazelcast.keep-user-storage-duration",
+      "type": "java.time.Duration"
+    },
+    {
       "name": "spring.datasource.liquibase.change-log",
       "type": "java.lang.String"
     },
