@@ -2,33 +2,48 @@ package com.example.hhvolgograd.web.service;
 
 import com.example.hhvolgograd.mail.service.MailService;
 import com.example.hhvolgograd.persistance.db.service.CashService;
-import com.example.hhvolgograd.persistance.grid.service.OtpService;
+import com.example.hhvolgograd.persistance.grid.service.HazelcastFactory;
+import com.example.hhvolgograd.persistance.grid.service.HazelcastMapService;
+import com.example.hhvolgograd.web.security.Scope;
 import com.example.hhvolgograd.web.security.TokenGenerator;
 import com.example.hhvolgograd.web.security.TokenParameter;
-import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.example.hhvolgograd.web.security.Scope.PHONES_READ;
-import static com.example.hhvolgograd.web.security.Scope.PHONES_WRITE;
-import static com.example.hhvolgograd.web.security.Scope.PROFILE_READ;
-import static com.example.hhvolgograd.web.security.Scope.USERINFO_READ;
-import static com.example.hhvolgograd.web.security.Scope.USERINFO_WRITE;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.example.hhvolgograd.persistance.grid.service.HazelcastMapServiceType.OTP_SERVICE;
 
 @Service
-@AllArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
     private final CashService cashService;
-    private final OtpService otpService;
+    private final HazelcastMapService otpService;
     private final MailService mailService;
     private final TokenGenerator tokenGenerator;
+
+    public LoginServiceImpl(
+            CashService cashService,
+            HazelcastFactory factory,
+            MailService mailService,
+            TokenGenerator tokenGenerator
+    ) {
+        this.cashService = cashService;
+        this.otpService = factory.createInstance(OTP_SERVICE);
+        this.mailService = mailService;
+        this.tokenGenerator = tokenGenerator;
+    }
 
     @Override
     public void login(String email) {
         cashService.checkIfEmailIsRegistered(email);
-        val otp = otpService.save(email);
+
+        val otp = UUID.randomUUID().toString();
+
+        otpService.save(email, otp);
         mailService.send(email, otp);
     }
 
@@ -38,13 +53,9 @@ public class LoginServiceImpl implements LoginService {
 
         val user = cashService.findUserByEmail(email);
         val id = user.getId().toString();
-        val scope = String.join(", ",
-                USERINFO_READ,
-                USERINFO_WRITE,
-                PROFILE_READ,
-                PHONES_READ,
-                PHONES_WRITE
-        );
+        val scope = Arrays.stream(Scope.values())
+                .map(Scope::getValue)
+                .collect(Collectors.joining(", "));
 
         return tokenGenerator.generate(
                 TokenParameter
@@ -57,7 +68,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private void checkIfOtpIsCorrect(String email, String otp) {
-        if (!otpService.getOtpOrThrow(email).equals(otp)) {
+        if (!otpService.read(email).equals(otp)) {
             throw new UsernameNotFoundException("User email or password are incorrect.");
         }
     }
