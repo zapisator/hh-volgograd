@@ -21,23 +21,23 @@ public class SignedJwtBuilder {
         return new SignedJwtBuilder();
     }
 
-    public SignedJwtBuilder header(JWSAlgorithm algorithm) {
+    public SignedJwtBuilder withHeader(JWSAlgorithm algorithm) {
         this.header = new JWSHeader(algorithm);
         return this;
     }
 
-    public SignedJwtBuilder payload(JWTClaimsSet.Builder builder) {
+    public SignedJwtBuilder withPayload(JWTClaimsSet.Builder builder) {
         this.jwtClaimsSet = builder
                 .build();
         return this;
     }
 
-    public SignedJwtBuilder payload(JWTClaimsSet jwtClaimsSet) {
+    public SignedJwtBuilder withPayload(JWTClaimsSet jwtClaimsSet) {
         this.jwtClaimsSet = jwtClaimsSet;
         return this;
     }
 
-    public SignedJwtBuilder signature(JWSSigner signer) {
+    public SignedJwtBuilder withSignature(JWSSigner signer) {
         this.signer = signer;
         return this;
     }
