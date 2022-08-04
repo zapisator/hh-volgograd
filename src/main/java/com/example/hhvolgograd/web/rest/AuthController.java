@@ -37,7 +37,6 @@ public class AuthController {
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@Valid @RequestBody User user) throws JsonProcessingException {
         registrationService.register(user);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header(HttpHeaders.LOCATION, "/auth/registration-confirmation")
@@ -47,7 +46,6 @@ public class AuthController {
     @GetMapping(value = "/registration-confirmation")
     public ResponseEntity<String> confirm(@Valid @RequestParam String email, @RequestParam String otp) {
         registrationService.confirmRegistration(email, otp);
-
         return ResponseEntity.ok(format("User with email '%s' is successfully registered.", email));
     }
 
