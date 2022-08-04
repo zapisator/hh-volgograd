@@ -2,7 +2,7 @@ package com.example.hhvolgograd.web.service;
 
 import com.example.hhvolgograd.configuration.Configuration;
 import com.example.hhvolgograd.configuration.JwtProperty;
-import com.example.hhvolgograd.web.security.Role;
+import com.example.hhvolgograd.web.security.Scope;
 import com.example.hhvolgograd.web.security.TokenParameter;
 import com.example.hhvolgograd.web.security.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -30,7 +32,9 @@ class TokenServiceTest {
     void generate() throws JSONException {
         val email = "a@gmail.com";
         val userId = Long.toString(1L);
-        val scope = Role.USER.toString();
+        val scope = Arrays.stream(Scope.values())
+                .map(Scope::getValue)
+                .collect(Collectors.joining(", "));
         val tokenService = new TokenService(jwtProperty);
 
         val token = tokenService.generate(
