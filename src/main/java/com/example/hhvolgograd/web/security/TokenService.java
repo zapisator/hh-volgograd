@@ -39,15 +39,15 @@ public class TokenService implements JwtDecoder, TokenGenerator {
 
         String issuer = "hhVolgograd";
         return SignedJwtBuilder.create()
-                .header(algorithm)
-                .payload(new JWTClaimsSet.Builder()
+                .withHeader(algorithm)
+                .withPayload(new JWTClaimsSet.Builder()
                         .issuer(issuer)
                         .issueTime(issuedAt)
                         .expirationTime(expiresAt)
                         .subject(userId)
                         .claim(EMAIL, email)
                         .claim(SCOPE, scope))
-                .signature(new MACSigner(jwtProperty.getSecret()))
+                .withSignature(new MACSigner(jwtProperty.getSecret()))
                 .build()
                 .serialize();
     }
