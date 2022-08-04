@@ -2,38 +2,35 @@ package com.example.hhvolgograd.persistance.grid.service;
 
 import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.exception.TooEarlyToContactServiceException;
-import com.example.hhvolgograd.persistance.db.model.User;
 import com.hazelcast.map.IMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 
-@Service
-public class KeepingUserServiceImpl implements KeepingUserService {
+@Slf4j
+public class HazelcastMapServiceImpl implements HazelcastMapService {
 
-    public static final int storageTime = 10;
-    public static final TimeUnit unit = TimeUnit.MINUTES;
     private final IMap<String, String> map;
+    private final Duration duration;
 
-    @Autowired
-    public KeepingUserServiceImpl(HazelcastManager factory) {
-        this.map = factory.getInstance().getMap(mapName);
+    public HazelcastMapServiceImpl(IMap<String, String> map, Duration duration) {
+        this.map = map;
+        this.duration = duration;
     }
-    @Override
+
     public void save(String email, String userJson) {
-        checkCallIsInTime(email);
-        map.put(email, userJson, storageTime, unit);
+        requireCallIsInTime(email);
+        map.put(email, userJson, duration.toMillis(), TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public User getUserOrThrow(String email) {
+    public String read(String email) {
         return Optional
                 .ofNullable(map.get(email))
-                .map(User::fromJson)
                 .orElseThrow(
                         () -> new NotRegisteringUserException(format(
                                 "User with email '%s' is not registering, "
@@ -43,16 +40,19 @@ public class KeepingUserServiceImpl implements KeepingUserService {
                 );
     }
 
-    private void checkCallIsInTime(String email) {
+    private void requireCallIsInTime(String email) {
         if (map.containsKey(email)) {
+            log.debug("email '{}' is still contained at the map", email);
             throw new TooEarlyToContactServiceException(
                     format(
-                            "You try to register an email '%s' too soon. "
-                                    + "This action is permitted once every %s %s. Please, wait until this time.",
-                            email, storageTime, unit
+                            "You try to call the service too early for '%s'. "
+                                    + "This action is permitted once every %s. "
+                                    + "Please, wait until this time.",
+                            email, formatDurationHMS(duration.toMillis())
                     )
             );
         }
+        log.debug("email '{}' is NOT contained at the map", email);
     }
 
 }
