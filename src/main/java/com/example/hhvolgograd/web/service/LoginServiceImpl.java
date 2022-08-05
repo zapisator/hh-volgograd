@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String token(String email, String otp) {
-        checkIfOtpIsCorrect(email, otp);
+        requireOtpIsCorrect(email, otp);
 
         val user = cashService
                 .findUserByEmail(email)
@@ -73,7 +73,7 @@ public class LoginServiceImpl implements LoginService {
         );
     }
 
-    private void checkIfOtpIsCorrect(String email, String otp) {
+    private void requireOtpIsCorrect(String email, String otp) {
         if (!otpService.read(email).equals(otp)) {
             throw new UsernameNotFoundException("User email or password are incorrect.");
         }
