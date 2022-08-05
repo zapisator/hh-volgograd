@@ -20,17 +20,17 @@ public class TokenParameter {
 
     public class TokenParameterBuilder {
 
-        public TokenParameterBuilder email(String email) {
+        public TokenParameterBuilder withEmail(String email) {
             TokenParameter.this.email = email;
             return this;
         }
 
-        public TokenParameterBuilder userId(String userId) {
+        public TokenParameterBuilder withUserId(String userId) {
             TokenParameter.this.userId = userId;
             return this;
         }
 
-        public TokenParameterBuilder scope(String... scope) {
+        public TokenParameterBuilder withScope(String... scope) {
             TokenParameter.this.scope = Arrays
                     .stream(scope)
                     .reduce((accumulator, current) -> accumulator + ", " + current)

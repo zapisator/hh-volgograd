@@ -39,9 +39,9 @@ class TokenServiceTest {
 
         val token = tokenService.generate(
                 TokenParameter.create()
-                        .email(email)
-                        .userId(userId)
-                        .scope(scope)
+                        .withEmail(email)
+                        .withUserId(userId)
+                        .withScope(scope)
                         .build()
         );
         val payload = token.split("\\.")[1];
