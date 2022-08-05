@@ -39,7 +39,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         val userJson = user.toJson();
         val otp = UUID.randomUUID().toString();
 
-        cashService.checkIfNoSuchEmailIsRegistered(email);
+        cashService.requireNoSuchEmailIsRegistered(email);
         log.debug("User to send:\n{}", userJson);
         keepingUserService.save(email, userJson);
 

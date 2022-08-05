@@ -39,7 +39,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void login(String email) {
-        cashService.checkIfEmailIsRegistered(email);
+        cashService.requireEmailIsRegistered(email);
 
         val otp = UUID.randomUUID().toString();
 

@@ -79,7 +79,7 @@ class RegistrationServiceImplTest {
                 .send(anyString(), anyString());
         doThrow(new DuplicateKeyException(format("User with '%s' email has already registered.", email)))
                 .when(cashService)
-                .checkIfNoSuchEmailIsRegistered(anyString());
+                .requireNoSuchEmailIsRegistered(anyString());
 
         assertThrows(DuplicateKeyException.class, () -> registrationService.register(user));
     }
@@ -103,13 +103,13 @@ class RegistrationServiceImplTest {
                 .send(anyString(), anyString());
         doNothing()
                 .when(cashService)
-                .checkIfNoSuchEmailIsRegistered(anyString());
+                .requireNoSuchEmailIsRegistered(anyString());
 
         assertDoesNotThrow(() -> registrationService.register(user));
         verify(keepingUserService, times(1)).save(anyString(), anyString());
         verify(otpService, times(1)).save(anyString(), anyString());
         verify(mailService, times(1)).send(anyString(), anyString());
-        verify(cashService, times(1)).checkIfNoSuchEmailIsRegistered(anyString());
+        verify(cashService, times(1)).requireNoSuchEmailIsRegistered(anyString());
     }
 
     @Test
