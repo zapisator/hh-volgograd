@@ -1,5 +1,6 @@
 package com.example.hhvolgograd.web.service;
 
+import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.mail.service.MailService;
 import com.example.hhvolgograd.persistance.db.service.CashService;
 import com.example.hhvolgograd.persistance.grid.service.HazelcastFactory;
