@@ -66,9 +66,9 @@ public class LoginServiceImpl implements LoginService {
         return tokenGenerator.generate(
                 TokenParameter
                         .create()
-                        .email(email)
-                        .userId(id)
-                        .scope(scope)
+                        .withEmail(email)
+                        .withUserId(id)
+                        .withScope(scope)
                         .build()
         );
     }
