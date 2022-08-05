@@ -10,7 +10,7 @@ public interface CashService {
 
     void requireEmailIsRegistered(String email);
 
-    User findUserByEmail(String email);
+    Optional<User> findUserByEmail(String email);
 
     User save(User user);
 }

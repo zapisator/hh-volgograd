@@ -16,6 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.example.hhvolgograd.persistance.grid.service.HazelcastMapServiceType.OTP_SERVICE;
+import static java.lang.String.format;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -51,7 +52,11 @@ public class LoginServiceImpl implements LoginService {
     public String token(String email, String otp) {
         checkIfOtpIsCorrect(email, otp);
 
-        val user = cashService.findUserByEmail(email);
+        val user = cashService
+                .findUserByEmail(email)
+                .orElseThrow(() -> new NotRegisteringUserException(
+                        format("'%s' user was not found among registered users.", email))
+                );
         val id = user.getId().toString();
         val scope = Arrays.stream(Scope.values())
                 .map(Scope::getValue)

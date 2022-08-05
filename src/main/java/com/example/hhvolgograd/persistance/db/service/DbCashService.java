@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static java.lang.String.format;
 
 @Service
@@ -30,10 +32,8 @@ public class DbCashService implements CashService {
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return repository
-                .findUserByEmail(email)
-                .orElseThrow();
+    public Optional<User> findUserByEmail(String email) {
+        return repository.findUserByEmail(email);
     }
 
     @Override
