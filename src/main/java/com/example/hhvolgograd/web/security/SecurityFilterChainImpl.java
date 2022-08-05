@@ -31,6 +31,8 @@ public class SecurityFilterChainImpl {
                                 .antMatchers(HttpMethod.POST,
                                         "/auth/registration/**")
                                 .permitAll()
+                                .antMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
