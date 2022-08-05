@@ -16,14 +16,14 @@ public class DbCashService implements CashService {
     private final UserRepository repository;
 
     @Override
-    public void checkIfNoSuchEmailIsRegistered(String email) {
+    public void requireNoSuchEmailIsRegistered(String email) {
         if (repository.existsUserByEmail(email)) {
             throw new DuplicateKeyException(format("User with '%s' email has already registered.", email));
         }
     }
 
     @Override
-    public void checkIfEmailIsRegistered(String email) {
+    public void requireEmailIsRegistered(String email) {
         if (!repository.existsUserByEmail(email)) {
             throw new NotRegisteringUserException(format("User with '%s' email has no been registered.", email));
         }

@@ -2,11 +2,13 @@ package com.example.hhvolgograd.persistance.db.service;
 
 import com.example.hhvolgograd.persistance.db.model.User;
 
+import java.util.Optional;
+
 public interface CashService {
 
-    void checkIfNoSuchEmailIsRegistered(String email);
+    void requireNoSuchEmailIsRegistered(String email);
 
-    void checkIfEmailIsRegistered(String email);
+    void requireEmailIsRegistered(String email);
 
     User findUserByEmail(String email);
 
