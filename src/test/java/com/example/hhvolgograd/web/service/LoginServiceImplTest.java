@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 
 class LoginServiceImplTest {
 
-
     private CashService cashService;
     private HazelcastFactory hazelcastFactory;
     private HazelcastMapService otpService;
