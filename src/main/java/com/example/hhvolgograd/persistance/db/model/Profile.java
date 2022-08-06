@@ -1,5 +1,6 @@
 package com.example.hhvolgograd.persistance.db.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
+
+@Schema(description = "Money of the user")
 public class Profile {
 
     @Id

@@ -1,5 +1,6 @@
 package com.example.hhvolgograd.persistance.db.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,8 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
+@Schema(description = "All user phones")
 public class Phone {
 
     @Id

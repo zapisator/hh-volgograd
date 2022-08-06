@@ -3,6 +3,7 @@ package com.example.hhvolgograd.persistance.db.model;
 import com.example.hhvolgograd.exception.IncorrectJsonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,8 @@ import static java.lang.String.format;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
+@Schema(description = "A person with its identifiers")
 public class User {
 
     public static final int MIN_AGE = 0;
