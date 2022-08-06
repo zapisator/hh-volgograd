@@ -1,7 +1,7 @@
 package com.example.hhvolgograd.web.rest;
 
 import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.service.CashService;
+import com.example.hhvolgograd.web.service.ResourceService;
 import com.turkraft.springfilter.boot.Filter;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class ResourceController {
 
-    private final CashService service;
+    private final ResourceService service;
 
     @GetMapping("/users")
     public Page<User> list(@Filter Specification<User> specification, Pageable pageable) {
-        return service.findAll(specification, pageable);
+        return service.getUsers(specification, pageable);
     }
 
 }
