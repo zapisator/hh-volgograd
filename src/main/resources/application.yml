@@ -56,4 +56,5 @@ spring:
       enabled: ALWAYS
   profiles:
     active: dev
+    include: project
 
