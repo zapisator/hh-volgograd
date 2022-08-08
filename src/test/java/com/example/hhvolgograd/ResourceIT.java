@@ -10,10 +10,8 @@ import com.example.hhvolgograd.web.service.ResourceService;
 import com.example.hhvolgograd.web.service.ResourceServiceImpl;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;
 import lombok.val;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -28,20 +26,18 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static com.example.hhvolgograd.TestUtils.randomStringWithNonZeroLength;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DataJpaTest
@@ -83,6 +79,7 @@ public class ResourceIT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void twentyConsecutivelyNumberedUsers_justFilter_correct() throws Exception {
         val path = "/resource/users";
         val requiredId = 6;
@@ -100,24 +97,20 @@ public class ResourceIT {
                 .build();
 
         fillTheDb();
-        val resultActions = mockMvc
-                .perform(get(path + query));
 
-        val result = resultActions
+        mockMvc
+                .perform(get(path + query))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        val users = toUsers(result);
-        assertAll(
-                () -> assertNotNull(users),
-                () -> assertEquals(3, users.size()),
-                () -> assertThat(users)
-                        .allMatch(user
-                                -> user.getId() == requiredId
-                                || (user.getAge() > ageGreaterThan && user.getAge() < ageLessThan)
-                        )
-        );
+                .andExpect(
+                        jsonPath("$[*]", hasItem(new LambdaMatcher<>(expressionResult -> {
+                            val map = (Map<String, Object>) expressionResult;
+                            val id = (int)map.get("id");
+                            val age = (int)map.get("age");
+
+                            return id == requiredId || (age > ageGreaterThan && age < ageLessThan );
+                        }, "id == " + requiredId
+                                + " or (age > " + ageGreaterThan + " && age < " + ageLessThan + ")")))
+                );
     }
 
     @Test
@@ -136,28 +129,19 @@ public class ResourceIT {
                 .build();
 
         fillTheDb();
-        val resultActions = mockMvc
-                .perform(get(path + query));
 
-        val result = resultActions
+        mockMvc
+                .perform(get(path + query))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        val users = toUsers(result);
-        assertAll(
-                () -> assertNotNull(users),
-                () -> assertEquals(19, users.size())
-        );
+                .andExpect(
+                        jsonPath("$[*]", hasSize(pageSize))
+                );
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "?snthSNTHI=eeeeeeeeeee..",
-            "?fiter= sntahsntoseu"
-    })
-    public void twentyConsecutivelyNumberedUsers_unexpectedQuery_givesDefaultNumberOfUsers(String query) throws Exception {
+    @RepeatedTest(10)
+    public void twentyConsecutivelyNumberedUsers_unexpectedQuery_givesDefaultNumberOfUsers() throws Exception {
         val path = "/resource/users";
+        val query = "?" + randomStringWithNonZeroLength();
         val defaultNumberOfUsers = 3;
         val resourceController = new ResourceController(resourceService);
         val mockMvc = MockMvcBuilders
@@ -169,24 +153,13 @@ public class ResourceIT {
                 .build();
 
         fillTheDb();
-        val resultActions = mockMvc
-                .perform(get(path + query));
 
-        val result = resultActions
+        mockMvc
+                .perform(get(path + query))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        val users = toUsers(result);
-        assertAll(
-                () -> assertNotNull(users),
-                () -> assertEquals(defaultNumberOfUsers, users.size())
-        );
-    }
-
-    @NotNull
-    private static List<User> toUsers(String result) throws IOException {
-        return List.of(new ObjectMapper().readValue(result, User[].class));
+                .andExpect(
+                        jsonPath("$[*]", hasSize(defaultNumberOfUsers))
+                );
     }
 
     private void fillTheDb() {
