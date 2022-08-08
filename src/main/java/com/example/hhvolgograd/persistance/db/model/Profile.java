@@ -1,5 +1,6 @@
 package com.example.hhvolgograd.persistance.db.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class Profile {
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonBackReference
     private User user;
 
     public Profile(BigDecimal cash) {

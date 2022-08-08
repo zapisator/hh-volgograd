@@ -1,5 +1,6 @@
 package com.example.hhvolgograd.persistance.db.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Phone {
             cascade = CascadeType.ALL
     )
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     public Phone(String value) {

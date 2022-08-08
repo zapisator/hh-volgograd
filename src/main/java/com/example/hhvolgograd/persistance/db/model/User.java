@@ -1,6 +1,7 @@
 package com.example.hhvolgograd.persistance.db.model;
 
 import com.example.hhvolgograd.exception.IncorrectJsonException;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,6 +66,7 @@ public class User {
             orphanRemoval = true,
             mappedBy = "user"
     )
+    @JsonManagedReference
     private Profile profile;
 
     @OneToMany(
@@ -73,6 +75,7 @@ public class User {
             orphanRemoval = true,
             mappedBy = "user"
     )
+    @JsonManagedReference
     private Set<Phone> phones;
 
     public static User fromJson(String userJson) {
@@ -124,7 +127,7 @@ public class User {
                 ",\n\tage=" + age +
                 ",\n\temail='" + email + '\'' +
                 (profile == null ? "" : ",\n\t" + profile) +
-                (phones == null ? "" : ",\n\tphones: [\n" + phones + "\n\t]") +
+                (phones == null || phones.isEmpty() ? "" : ",\n\tphones: [\n" + phones + "\n\t]") +
                 "\n}";
     }
 
