@@ -79,6 +79,97 @@ public class RepositoryIT {
     @Autowired
     private UserRepository userRepository;
 
+    private static Stream<Arguments> alphanumericName() {
+        return Stream.generate(() -> randomAlphanumeric(nextInt(1, 20)))
+                .limit(10)
+                .map(Arguments::of);
+    }
+
+    private static Stream<Arguments> negativeOrExcessiveAge() {
+        val negativeAges = Stream.generate(() -> nextInt(1, Integer.MAX_VALUE) * -1)
+                .limit(10)
+                .map(Arguments::of);
+        val positiveForbiddenAges = IntStream.range(0, MIN_AGE)
+                .mapToObj(number -> Arguments.of(nextInt(0, MIN_AGE)));
+        val excessiveAges = Stream.generate(() -> nextInt(MAX_AGE, Integer.MAX_VALUE))
+                .limit(10)
+                .map(Arguments::of);
+
+        return Stream.concat(
+                Stream.concat(negativeAges, excessiveAges),
+                positiveForbiddenAges
+        );
+    }
+
+    public static Stream<Arguments> agesInRange() {
+        return Stream.generate(() -> nextInt(MIN_AGE, MAX_AGE + 1))
+                .limit(10)
+                .map(Arguments::of);
+    }
+
+    public static Stream<Arguments> emailImproperCombinations() {
+        return Stream.of(
+                "plainaddress",
+                "#@%^%#$@#$@#.com",
+                "@example.com",
+                "Joe Smith <email@example.com>",
+                "email.example.com",
+                "email@example@example.com",
+                ".email@example.com",
+                "email.@example.com",
+                "email..email@example.com",
+                "あいうえお@example.com",
+                "email@example.com (Joe Smith)",
+                "email@example",
+                "email@-example.com",
+                "email@example.web",
+                "email@111.222.333.44444",
+                "email@example..com",
+                "Abc..123@example.com",
+                "List of Strange Invalid Email Addresses",
+                "”(),:;<>[\\]@example.com",
+                "just”not”right@example.com",
+                "this\\ is\"really\"not\\allowed@example.com"
+        ).map(Arguments::of);
+    }
+
+    public static Stream<Arguments> emailValidValues() {
+        return Stream.of(
+                "email@example.com",
+                "firstname.lastname@example.com",
+                "email@subdomain.example.com",
+                "firstname+lastname@example.com",
+                "1234567890@example.com",
+                "email@example-one.com",
+                "_______@example.com",
+                "email@example.name",
+                "email@example.museum",
+                "email@example.co.jp",
+                "firstname-lastname@example.com"
+        ).map(Arguments::of);
+    }
+
+    public static Stream<Arguments> positiveCash() {
+        return Stream.generate(() -> nextDouble(0D, 1_000_000D))
+                .limit(10)
+                .map(Arguments::of);
+    }
+
+    public static Stream<Arguments> negativeCash() {
+        val max = 0D + 0.01;
+
+        return Stream.generate(() -> nextDouble(max, 1_000_000D) * -1)
+                .limit(10)
+                .map(Arguments::of);
+    }
+
+    public static Stream<Arguments> alphanumericPhoneValue() {
+        return Stream.generate(() -> randomAlphanumeric(nextInt(1, 20)))
+                .limit(10)
+                .distinct()
+                .map(Arguments::of);
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "  ", "\t", "\n"})
@@ -255,97 +346,6 @@ public class RepositoryIT {
                 () -> assertEquals(phoneInitial, phoneInitial),
                 () -> assertNotNull(phoneReturned.getId())
         );
-    }
-
-    private static Stream<Arguments> alphanumericName() {
-        return Stream.generate(() -> randomAlphanumeric(nextInt(1, 20)))
-                .limit(10)
-                .map(Arguments::of);
-    }
-
-    private static Stream<Arguments> negativeOrExcessiveAge() {
-        val negativeAges = Stream.generate(() -> nextInt(1, Integer.MAX_VALUE) * -1)
-                .limit(10)
-                .map(Arguments::of);
-        val positiveForbiddenAges = IntStream.range(0, MIN_AGE)
-                .mapToObj(number -> Arguments.of(nextInt(0, MIN_AGE)));
-        val excessiveAges = Stream.generate(() -> nextInt(MAX_AGE, Integer.MAX_VALUE))
-                .limit(10)
-                .map(Arguments::of);
-
-        return Stream.concat(
-                Stream.concat(negativeAges, excessiveAges),
-                positiveForbiddenAges
-        );
-    }
-
-    public static Stream<Arguments> agesInRange() {
-        return Stream.generate(() -> nextInt(MIN_AGE, MAX_AGE + 1))
-                .limit(10)
-                .map(Arguments::of);
-    }
-
-    public static Stream<Arguments> emailImproperCombinations() {
-        return Stream.of(
-                "plainaddress",
-                "#@%^%#$@#$@#.com",
-                "@example.com",
-                "Joe Smith <email@example.com>",
-                "email.example.com",
-                "email@example@example.com",
-                ".email@example.com",
-                "email.@example.com",
-                "email..email@example.com",
-                "あいうえお@example.com",
-                "email@example.com (Joe Smith)",
-                "email@example",
-                "email@-example.com",
-                "email@example.web",
-                "email@111.222.333.44444",
-                "email@example..com",
-                "Abc..123@example.com",
-                "List of Strange Invalid Email Addresses",
-                "”(),:;<>[\\]@example.com",
-                "just”not”right@example.com",
-                "this\\ is\"really\"not\\allowed@example.com"
-        ).map(Arguments::of);
-    }
-
-    public static Stream<Arguments> emailValidValues() {
-        return Stream.of(
-                "email@example.com",
-                "firstname.lastname@example.com",
-                "email@subdomain.example.com",
-                "firstname+lastname@example.com",
-                "1234567890@example.com",
-                "email@example-one.com",
-                "_______@example.com",
-                "email@example.name",
-                "email@example.museum",
-                "email@example.co.jp",
-                "firstname-lastname@example.com"
-        ).map(Arguments::of);
-    }
-
-    public static Stream<Arguments> positiveCash() {
-        return Stream.generate(() -> nextDouble(0D, 1_000_000D))
-                .limit(10)
-                .map(Arguments::of);
-    }
-
-    public static Stream<Arguments> negativeCash() {
-        val max = 0D + 0.01;
-
-        return Stream.generate(() -> nextDouble(max, 1_000_000D) * -1)
-                .limit(10)
-                .map(Arguments::of);
-    }
-
-    public static Stream<Arguments> alphanumericPhoneValue() {
-        return Stream.generate(() -> randomAlphanumeric(nextInt(1, 20)))
-                .limit(10)
-                .distinct()
-                .map(Arguments::of);
     }
 
 }
