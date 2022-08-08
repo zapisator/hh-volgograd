@@ -36,7 +36,7 @@ class HazelcastMapServiceIT {
     public static void firstSetUp() {
         val clientConfig = new HazelcastClientProperty().clientConfig();
 
-        hazelcastMemberContainer = new HazelcastMemberContainerFactory().hazelcastMemberContainer();
+        hazelcastMemberContainer = new ContainerFactory().hazelcastMemberContainer();
         hazelcastMemberContainer.start();
         instance = HazelcastClient.newHazelcastClient(clientConfig);
     }
