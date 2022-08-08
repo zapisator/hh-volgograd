@@ -6,10 +6,10 @@ import com.example.hhvolgograd.persistance.db.model.User;
 import com.example.hhvolgograd.persistance.db.repository.UserRepository;
 import com.example.hhvolgograd.persistance.db.service.DbCashService;
 import com.example.hhvolgograd.web.rest.ResourceController;
-import com.example.hhvolgograd.web.service.ResourceService;
 import com.example.hhvolgograd.web.service.ResourceServiceImpl;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;
 import lombok.val;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -21,13 +21,13 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +55,7 @@ public class ResourceIT {
 
     @Autowired
     private UserRepository userRepository;
-    private ResourceService resourceService;
+    private MockMvc mockMvc;
 
     static class DockerPostgresDataSourceInitializer
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -72,10 +72,19 @@ public class ResourceIT {
 
     }
 
-    @PostConstruct
-    public void set() {
+    @BeforeEach
+    public void setUp() {
         val cashService = new DbCashService(userRepository);
-        resourceService = new ResourceServiceImpl(cashService);
+        val resourceService = new ResourceServiceImpl(cashService);
+        val resourceController = new ResourceController(resourceService);
+
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(resourceController)
+                .setCustomArgumentResolvers(
+                        new PageableHandlerMethodArgumentResolver(),
+                        new SpecificationFilterArgumentResolver()
+                )
+                .build();
     }
 
     @Test
@@ -87,14 +96,6 @@ public class ResourceIT {
         val ageLessThan = 5;
         val query = "?"
                 + "filter= id:" + requiredId + " or (age > " + ageGreaterThan + " and age < " + ageLessThan + ")";
-        val resourceController = new ResourceController(resourceService);
-        val mockMvc = MockMvcBuilders
-                .standaloneSetup(resourceController)
-                .setCustomArgumentResolvers(
-                        new PageableHandlerMethodArgumentResolver(),
-                        new SpecificationFilterArgumentResolver()
-                )
-                .build();
 
         fillTheDb();
 
@@ -119,14 +120,6 @@ public class ResourceIT {
         val pageSize = 19;
         val query = "?"
                 + "size=" + pageSize;
-        val resourceController = new ResourceController(resourceService);
-        val mockMvc = MockMvcBuilders
-                .standaloneSetup(resourceController)
-                .setCustomArgumentResolvers(
-                        new PageableHandlerMethodArgumentResolver(),
-                        new SpecificationFilterArgumentResolver()
-                )
-                .build();
 
         fillTheDb();
 
@@ -143,14 +136,6 @@ public class ResourceIT {
         val path = "/resource/users";
         val query = "?" + randomStringWithNonZeroLength();
         val defaultNumberOfUsers = 3;
-        val resourceController = new ResourceController(resourceService);
-        val mockMvc = MockMvcBuilders
-                .standaloneSetup(resourceController)
-                .setCustomArgumentResolvers(
-                        new PageableHandlerMethodArgumentResolver(),
-                        new SpecificationFilterArgumentResolver()
-                )
-                .build();
 
         fillTheDb();
 
