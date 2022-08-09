@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("unused")
 public class UserAccess {
 
     public boolean checkId(Authentication authentication, int id) {
