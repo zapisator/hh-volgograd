@@ -2,11 +2,12 @@ package com.example.hhvolgograd.web.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static org.springframework.http.HttpMethod.POST;
 
 @EnableWebSecurity
 @AllArgsConstructor
@@ -28,13 +29,14 @@ public class SecurityFilterChainImpl {
                 )
                 .authorizeRequests(
                         authorizeRequestsConfigurer -> authorizeRequestsConfigurer
-                                .antMatchers(HttpMethod.POST,
-                                        "/auth/registration/**")
+                                .antMatchers(POST, "/auth/registration/**")
                                 .permitAll()
                                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**")
                                 .permitAll()
+                                .mvcMatchers(POST, "/resource/user/{id:\\d+}/updating")
+                                .access("@userAccess.checkId(authentication,#id)")
                                 .anyRequest()
-                                .authenticated()
+                                .denyAll()
                 )
                 .build();
     }
