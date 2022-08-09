@@ -12,8 +12,10 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +51,14 @@ public class ResourceController {
             Pageable pageable
     ) {
         return service.getUsers(specification, pageable);
+    }
+
+    @PostMapping(value = "/user/{id}/updating", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "updates user. path id and grant scope id must match")
+    public User update(User user) {
+
+        System.out.println("We made it");
+        return service.update(user);
     }
 
 }

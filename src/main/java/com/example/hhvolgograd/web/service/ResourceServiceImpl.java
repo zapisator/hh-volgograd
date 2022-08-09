@@ -23,7 +23,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public User update() {
-        return null;
+    public User update(User user) {
+        return service.save(user);
     }
 }

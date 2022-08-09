@@ -11,5 +11,5 @@ public interface ResourceService {
 
     List<User> getUsers(Specification<User> specification, Pageable pageable);
 
-    User update();
+    User update(User user);
 }
