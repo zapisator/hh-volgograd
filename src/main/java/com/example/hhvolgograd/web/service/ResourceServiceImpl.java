@@ -23,7 +23,36 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public User update(User user) {
-        return service.save(user);
+    public void updateUser(JsonNode patch, long id) {
+        val commonValidator = new CommonValidator();
+        val updates = new UserUpdates();
+
+        IntStream.range(0, patch.size())
+                .mapToObj(patch::get)
+                .filter(commonValidator::validate)
+                .forEach(jsonNode -> {
+                            val fieldName = jsonNode
+                                    .path("path")
+                                    .textValue()
+                                    .replace("/", "");
+                            val value = jsonNode.path("op").textValue().equals("remove")
+                                    ? jsonNode.path("value").textValue()
+                                    : null;
+
+                            updates.set(fieldName, value);
+                        }
+                );
+        service.updateUser(updates, id);
     }
+
+    @Override
+    public void updatePhones(JsonNode patch, long userId) {
+
+    }
+
+    @Override
+    public void deletePhones(long userId) {
+
+    }
+
 }
