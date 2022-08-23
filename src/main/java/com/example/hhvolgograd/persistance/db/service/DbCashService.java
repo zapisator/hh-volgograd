@@ -9,12 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
 
 @Service
+@Transactional(isolation = Isolation.SERIALIZABLE)
 @AllArgsConstructor
 public class DbCashService implements CashService {
 
