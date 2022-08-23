@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -50,7 +51,9 @@ public class ResourceController {
             @PageableDefault(size = 3)
             Pageable pageable
     ) {
-        return service.getUsers(specification, pageable);
+        val users = service.getUsers(specification, pageable);
+
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping(value = "/user/{id}/updating", consumes = MediaType.APPLICATION_JSON_VALUE)
