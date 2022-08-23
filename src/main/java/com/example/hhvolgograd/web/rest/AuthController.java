@@ -45,7 +45,7 @@ public class AuthController {
     public ResponseEntity<String> register(@Valid @RequestBody User user) throws JsonProcessingException {
         registrationService.register(user);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.SEE_OTHER)
                 .header(HttpHeaders.LOCATION, "/auth/registration-confirmation")
                 .body(format(SIGN_IN_ON_ANSWER, "registration"));
     }
@@ -56,7 +56,9 @@ public class AuthController {
             @Valid @RequestParam String email,
             @RequestParam String otp) {
         registrationService.confirmRegistration(email, otp);
-        return ResponseEntity.ok(format("User with email '%s' is successfully registered.", email));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(format("User with email '%s' is successfully registered.", email));
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -64,7 +66,7 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestParam String email) {
         loginService.login(email);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.SEE_OTHER)
                 .header(HttpHeaders.LOCATION, "/auth/token")
                 .body(format(SIGN_IN_ON_ANSWER, "login"));
     }
@@ -74,7 +76,9 @@ public class AuthController {
     public ResponseEntity<String> token(@RequestParam String email, @RequestParam String otp) {
         val token = loginService.token(email, otp);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(token);
     }
 
 }
