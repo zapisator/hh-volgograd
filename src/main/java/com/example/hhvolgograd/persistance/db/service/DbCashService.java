@@ -2,6 +2,7 @@ package com.example.hhvolgograd.persistance.db.service;
 
 import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.persistance.db.model.User;
+import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
 import com.example.hhvolgograd.persistance.db.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,36 +22,50 @@ import static java.lang.String.format;
 @AllArgsConstructor
 public class DbCashService implements CashService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
     @Override
     public void requireNoSuchEmailIsRegistered(String email) {
-        if (repository.existsUserByEmail(email)) {
+        if (userRepository.existsUserByEmail(email)) {
             throw new DuplicateKeyException(format("User with '%s' email has already registered.", email));
         }
     }
 
     @Override
     public void requireEmailIsRegistered(String email) {
-        if (!repository.existsUserByEmail(email)) {
+        if (!userRepository.existsUserByEmail(email)) {
             throw new NotRegisteringUserException(format("User with '%s' email has no been registered.", email));
         }
     }
 
     @Override
     public Optional<User> findUserByEmail(String email) {
-        return repository.findUserByEmail(email);
+        return userRepository.findUserByEmail(email);
     }
 
     @Override
     public User save(User user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public Page<User> findAll(Specification<User> specification, Pageable pageable) {
-        return repository.findAll(specification, pageable);
+        return userRepository.findAll(specification, pageable);
     }
 
+    @Override
+    public void updateUser(UserUpdates updates, long id) {
+        userRepository.update(updates, id);
+    }
+
+    @Override
+    public void updatePhones() {
+
+    }
+
+    @Override
+    public void updateProfile() {
+
+    }
 
 }
