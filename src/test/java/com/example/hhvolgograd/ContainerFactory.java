@@ -8,6 +8,7 @@ import java.io.File;
 
 import static java.io.File.separator;
 
+@SuppressWarnings({"resource", "rawtypes"})
 public class ContainerFactory {
 
     public DockerComposeContainer hazelcastMemberContainer() {
