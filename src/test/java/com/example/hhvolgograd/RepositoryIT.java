@@ -170,6 +170,45 @@ public class RepositoryIT {
                 .map(Arguments::of);
     }
 
+    @Test
+    public void updateUser_alreadySavedUser_updateName_ok() {
+        val initialUser = new User(VALID_NAME, VALID_AGE, VALID_EMAIL);
+        val returnedUser = userRepository.save(initialUser);
+
+        val userUpdates = UserUpdates.create(Map.of("name", "eman"));
+        userRepository.update(userUpdates, returnedUser.getId().intValue());
+        val user = userRepository.findAll().get(0);
+        System.out.println(user);
+
+        assertEquals("eman", user.getName());
+    }
+
+    @Test
+    public void updateUser_alreadySavedUser_updateAge_ok() {
+        val initialUser = new User(VALID_NAME, VALID_AGE, VALID_EMAIL);
+        val returnedUser = userRepository.save(initialUser);
+
+        val userUpdates = UserUpdates.create(Map.of("age", "2"));
+        userRepository.update(userUpdates, returnedUser.getId().intValue());
+        val user = userRepository.findAll().get(0);
+        System.out.println(user);
+
+        assertEquals(2, user.getAge());
+    }
+
+    @Test
+    public void updateUser_alreadySavedUser_updateEmail_noEmailIntersections_ok() {
+        val initialUser = new User(VALID_NAME, VALID_AGE, VALID_EMAIL);
+        val returnedUser = userRepository.save(initialUser);
+
+        val userUpdates = UserUpdates.create(Map.of("email", "b@rambler.ru"));
+        userRepository.update(userUpdates, returnedUser.getId().intValue());
+        val user = userRepository.findAll().get(0);
+        System.out.println(user);
+
+        assertEquals("b@rambler.ru", user.getEmail());
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "  ", "\t", "\n"})
