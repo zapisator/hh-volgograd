@@ -56,6 +56,7 @@ public class RepositoryIT {
     private static final Class<ConstraintViolationException> EXCEPTION_CLASS = ConstraintViolationException.class;
 
     @Container
+    @SuppressWarnings({"resource"})
     public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
             .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(RepositoryIT.class)))
             .withDatabaseName("postgres")
