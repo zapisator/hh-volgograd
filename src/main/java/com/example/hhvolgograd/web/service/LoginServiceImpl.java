@@ -61,7 +61,9 @@ public class LoginServiceImpl implements LoginService {
         val id = user.getId().toString();
         val scope = Arrays.stream(Scope.values())
                 .map(Scope::getValue)
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(", "))
+                + ", " + id;
+
 
         return tokenGenerator.generate(
                 TokenParameter
