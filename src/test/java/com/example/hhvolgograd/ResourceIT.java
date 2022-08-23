@@ -42,11 +42,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DataJpaTest
 @ContextConfiguration(initializers = {ResourceIT.DockerPostgresDataSourceInitializer.class})
+//@Import({NativeSqlUserRepositoryImpl.class, QueryBuilderImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 public class ResourceIT {
 
     @Container
+    @SuppressWarnings({"resource"})
     public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
             .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(RepositoryIT.class)))
             .withDatabaseName("postgres")
