@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service.patch.validation;
+package com.example.hhvolgograd.validation.patch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +10,14 @@ import java.util.List;
 public class CommonValidator implements OperationValidator {
     @Override
     public boolean validate(JsonNode node) {
-        val operation = node.path("operation");
+        val operationPathName = "op";
+        val operation = node.path(operationPathName);
         val opNames = List.of(
                 "add",
                 "remove",
                 "replace"
         );
-        val decision = node.has("operation")
+        val decision = node.has(operationPathName)
                 && opNames.contains(operation.textValue())
                 && node.has("path")
                 && (operation.textValue().equals("remove") || node.has("value"));
