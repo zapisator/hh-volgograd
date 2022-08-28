@@ -39,8 +39,7 @@ public class Phone {
     private String value;
 
     @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            fetch = FetchType.LAZY
     )
     @JoinColumn(name = "user_id")
     @JsonBackReference
