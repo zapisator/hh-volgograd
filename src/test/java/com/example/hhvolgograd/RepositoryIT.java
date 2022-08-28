@@ -182,10 +182,52 @@ public class RepositoryIT {
                 .map(Arguments::of);
     }
 
+    @RepeatedTest(5)
+    public void deleteAll_fiveUsersWith2PhonesEach_tenDeletes() {
+        usersWithTwoPhonesEachCreatedAndSaved();
+
+        val deletesCount = phoneRepository.deleteAllNative();
+
+        assertEquals(10, deletesCount);
+    }
+
+    @RepeatedTest(5)
+    public void deleteAll_noUsersNoPhones_zeroDeletes() {
+        val deletesCount = phoneRepository.deleteAllNative();
+
+        assertEquals(0, deletesCount);
+    }
+
+    @RepeatedTest(5)
+    public void deleteAllByUserId_allHaveTwoPhones_twoDeletes() {
+        val users = usersWithTwoPhonesEachCreatedAndSaved();
+        val user = users.get(nextInt(0, users.size()));
+
+        val deletesCount = phoneRepository.deleteAllByUserId(user.getId());
+
+        assertEquals(2, deletesCount);
+    }
+
+    @RepeatedTest(5)
+    public void deleteAllByUserId_AllHaveTwoPhones_noSuchId_zeroDeletes() {
+        val users = usersWithTwoPhonesEachCreatedAndSaved();
+        val id = users
+                .stream()
+                .map(User::getId)
+                .mapToInt(Long::intValue)
+                .max()
+                .orElseThrow()
+                + 1;
+
+        val deletesCount = phoneRepository.deleteAllByUserId(id);
+
+        assertEquals(0, deletesCount);
+    }
+
     @RepeatedTest(10)
     public void deletePhonesByUserIdAndValues_deleteOneOfPhonesOfExistingUser_ok() {
         val phonesSize = 10;
-        val phones = phonesCreatedInAmountOf();
+        val phones = phonesCreated();
         val savedUser = userWithPhonesSavedAtDataBase(phones);
         val phoneToDeleteIndex = nextInt(0, phonesSize);
         val phoneValueToDelete = new LinkedList<>(savedUser.getPhones()).get(phoneToDeleteIndex);
@@ -198,7 +240,7 @@ public class RepositoryIT {
 
     @Test
     public void deletePhonesByUserIdAndValues_deletePhoneWithIncorrectValue_throws() {
-        val phones = phonesCreatedInAmountOf();
+        val phones = phonesCreated();
         val savedUser = userWithPhonesSavedAtDataBase(phones);
         val phonesToDelete = List.of(new Entry<>("value", "\n\n\n\t"));
 
@@ -211,7 +253,7 @@ public class RepositoryIT {
     @Test
     public void deletePhonesByUserIdAndValues_deletePhonesExistingUserDoesNotHave_ok() {
         val phonesSize = 10;
-        val phones = phonesCreatedInAmountOf();
+        val phones = phonesCreated();
         val savedUser = userWithPhonesSavedAtDataBase(phones);
         val phoneToDeleteIndex = nextInt(0, phonesSize);
         val phoneValueToDelete = new LinkedList<>(savedUser.getPhones()).get(phoneToDeleteIndex);
@@ -224,7 +266,7 @@ public class RepositoryIT {
 
     @Test
     public void addPhonesByUserIdAndValues_addOnePhoneToUserPhones_ok() {
-        val phones = phonesCreatedInAmountOf();
+        val phones = phonesCreated();
         val savedUser = userWithPhonesSavedAtDataBase(phones);
         val phonesToAdd = List.of(new Entry<>("value", "89048000100"));
 
@@ -235,7 +277,7 @@ public class RepositoryIT {
 
     @RepeatedTest(10)
     public void addPhonesByUserIdAndValues_addOneIncorrectPhoneToUserPhones_throws() {
-        val phones = phonesCreatedInAmountOf();
+        val phones = phonesCreated();
         val savedUser = userWithPhonesSavedAtDataBase(phones);
         val phonesToAdd = List.of(new Entry<>("value", "\n\n\n"));
 
@@ -503,17 +545,56 @@ public class RepositoryIT {
         return savedUser;
     }
 
-
-    @NotNull
-    private List<Phone> phonesCreatedInAmountOf() {
+    private List<Phone> phonesCreatedInAmountOf(int phonesCount, long startNumber) {
         return IntStream
-                .range(0, 10)
+                .range(0, phonesCount)
                 .mapToObj(i -> {
                     val phone = new Phone();
 
-                    phone.setValue(Long.valueOf(8_903_800_0100L + i).toString());
+                    phone.setValue(Long.valueOf(startNumber + i).toString());
                     return phone;
                 })
                 .collect(Collectors.toList());
+    }
+
+
+    @NotNull
+    private List<Phone> phonesCreated() {
+        val phonesCount = 10;
+
+        return phonesCreatedInAmountOf(phonesCount, 8_903_800_0100L);
+    }
+
+    private List<User> usersWithTwoPhonesEachCreatedAndSaved() {
+        val size = 5;
+        val names = alphanumericName()
+                .map(Arguments::get)
+                .map(argument -> (String) argument[0])
+                .limit(size)
+                .collect(Collectors.toList());
+        val ages = agesInRange()
+                .map(Arguments::get)
+                .map(argument -> (Integer) argument[0])
+                .limit(size)
+                .collect(Collectors.toList());
+        val emails = emailValidValues()
+                .map(Arguments::get)
+                .map(argument -> (String) argument[0])
+                .limit(size)
+                .collect(Collectors.toList());
+        val users = IntStream.range(0, size)
+                .mapToObj(i -> new User(names.get(i), ages.get(i), emails.get(i)))
+                .collect(Collectors.toList());
+
+        userRepository.deleteAll();
+        val savedUsers = userRepository.saveAll(users);
+        IntStream.range(0, savedUsers.size())
+                .forEach(i -> {
+                    val user = users.get(i);
+                    val anotherPhones = phonesCreatedInAmountOf(2, 8_903_800_0100L + i * 100L);
+
+                    user.setPhones(anotherPhones);
+                });
+        return userRepository.saveAll(savedUsers);
     }
 }
