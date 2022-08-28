@@ -7,6 +7,8 @@ import com.example.hhvolgograd.persistence.db.repository.custom.query.QueryBuild
 import com.example.hhvolgograd.validation.javax.external.JavaxValidator;
 import lombok.AllArgsConstructor;
 import lombok.val;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
+@Transactional(isolation = Isolation.SERIALIZABLE)
 public class NativeSqlPhoneRepositoryImpl implements NativeSqlPhoneRepository {
 
     @PersistenceContext
@@ -47,6 +50,26 @@ public class NativeSqlPhoneRepositoryImpl implements NativeSqlPhoneRepository {
         val query = queryBuilder.createAllByForeignKey(
                 creates, "phones", new Entry<>("user_id", userId)
         );
+
+        return query.executeUpdate();
+    }
+
+    @Override
+    public int deleteAllByUserId(long userId) {
+        entityManager.clear();
+
+        final QueryBuilder queryBuilder = new QueryBuilderImpl(entityManager);
+        val query = queryBuilder.deleteAllByForeignKey("phones", new Entry<>("user_id", userId));
+
+        return query.executeUpdate();
+    }
+
+    @Override
+    public int deleteAllNative() {
+        entityManager.clear();
+
+        final QueryBuilder queryBuilder = new QueryBuilderImpl(entityManager);
+        val query = queryBuilder.deleteAll("phones");
 
         return query.executeUpdate();
     }

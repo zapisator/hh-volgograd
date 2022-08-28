@@ -9,4 +9,8 @@ public interface NativeSqlPhoneRepository {
     int deletePhonesByUserIdAndValues(long UserId, List<Entry<String>> deletes);
 
     int addPhonesByUserId(long userId, List<Entry<String>> creates);
+
+    int deleteAllByUserId(long userId);
+
+    int deleteAllNative();
 }
