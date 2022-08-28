@@ -1,8 +1,8 @@
-package com.example.hhvolgograd.persistance.db.repository;
+package com.example.hhvolgograd.persistance.db.repository.custom;
 
 import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
 
 public interface NativeSqlUserRepository {
 
-    void update(UserUpdates updates, long id);
+    int update(UserUpdates updates, long id);
 }
