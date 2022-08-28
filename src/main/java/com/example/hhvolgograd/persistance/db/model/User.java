@@ -49,7 +49,7 @@ public class User {
     private String name;
     @Min(value = MIN_AGE, message = "Human age could not be less than " + MIN_AGE)
     @Max(value = MAX_AGE, message = "Human age could not be more than " + MAX_AGE)
-    private int age;
+    private Integer age;
     @Column(unique = true)
     @NotBlank(message = "Name may not be blank")
     @Pattern(
@@ -113,10 +113,9 @@ public class User {
         return this;
     }
 
-    public User userWithPhones(Collection<Phone> phones) {
+    public void setPhones(Collection<Phone> phones) {
         this.phones.addAll(phones);
         phones.forEach(phone -> phone.setUser(this));
-        return this;
     }
 
     @Override
