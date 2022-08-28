@@ -64,14 +64,16 @@ public class DbCashService implements CashService {
     }
 
     @Override
-    public void updatePhones(List<Entry<String>> creates, List<Entry<String>> deletes, long userId) {
-       val updatesCount = phoneRepository.deletePhonesByUserIdAndValues(userId, deletes);
+    public int updatePhones(List<Entry<String>> creates, List<Entry<String>> deletes, long userId) {
+        val updatesCount = phoneRepository.deletePhonesByUserIdAndValues(userId, deletes);
         phoneRepository.addPhonesByUserId(userId, creates);
+
+        return updatesCount;
     }
 
     @Override
-    public void deletePhonesBy(long userId) {
-//        phoneRepository.deleteAllByUserId(userId);
+    public int deletePhonesBy(long userId) {
+        return phoneRepository.deleteAllByUserId(userId);
     }
 
     @Override

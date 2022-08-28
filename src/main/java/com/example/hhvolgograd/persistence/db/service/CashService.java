@@ -24,9 +24,9 @@ public interface CashService {
 
     int updateUser(UserUpdates updates, long id);
 
-    void updatePhones(List<Entry<String>> creates, List<Entry<String>> deletes, long userId);
+    int updatePhones(List<Entry<String>> creates, List<Entry<String>> deletes, long userId);
 
-    void deletePhonesBy(long userId);
+    int deletePhonesBy(long userId);
 
     void updateProfile();
 
