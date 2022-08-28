@@ -1,5 +1,7 @@
 logging:
   level:
+    javax:
+      persistence: trace
     org:
       hibernate:
         SQL: debug
@@ -7,5 +9,8 @@ logging:
           descriptor:
             sql: trace
       springframework:
+        orm:
+          jpa: debug
         security: debug
+        transaction: trace
     root: debug
