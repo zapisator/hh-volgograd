@@ -33,6 +33,8 @@ public class Phone {
     private Long id;
     @Column(unique = true)
     @EqualsAndHashCode.Include
+    @NotBlank
+    @Pattern(regexp = "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]*$")
     private String value;
 
     @ManyToOne(
