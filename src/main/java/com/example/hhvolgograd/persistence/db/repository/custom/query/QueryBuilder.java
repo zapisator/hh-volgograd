@@ -12,6 +12,10 @@ public interface QueryBuilder {
 
     <T, FK> Query createAllByForeignKey(List<Entry<T>> creates, String tableName, Entry<FK> foreignKey);
 
+    Query deleteAll(String tableName);
+
+    <FK> Query deleteAllByForeignKey(String tableName, Entry<FK> foreignKey);
+
     <T, FK> Query deleteAllByForeignKeyAndValues(
             List<Entry<T>> deletes,
             String tableName,

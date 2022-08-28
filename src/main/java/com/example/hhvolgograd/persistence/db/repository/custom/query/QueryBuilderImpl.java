@@ -10,7 +10,9 @@ import org.hibernate.type.IntegerType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -59,6 +61,16 @@ public class QueryBuilderImpl implements QueryBuilder {
     }
 
     @Override
+    public Query deleteAll(String tableName) {
+        return deleteAllByForeignKey(tableName, new Entry<String>(null, null));
+    }
+
+    @Override
+    public <FK> Query deleteAllByForeignKey(String tableName, Entry<FK> foreignKey) {
+        return deleteAllByForeignKeyAndValues(Collections.emptyList(), tableName, foreignKey);
+    }
+
+    @Override
     public <T, FK> Query deleteAllByForeignKeyAndValues(
             List<Entry<T>> deletes, String tableName, Entry<FK> foreignKey
     ) {
@@ -77,8 +89,14 @@ public class QueryBuilderImpl implements QueryBuilder {
 
                     query.setParameter(entry.getName() + i, entry.getValue());
                 });
-        query.setParameter(foreignKey.getName(), foreignKey.getValue());
+        setForeignKeyIfPresent(foreignKey, query);
         return query;
+    }
+
+    private static <FK> void setForeignKeyIfPresent(Entry<FK> foreignKey, Query query) {
+        if (Objects.nonNull(foreignKey.getName())) {
+            query.setParameter(foreignKey.getName(), foreignKey.getValue());
+        }
     }
 
     private <T, FK> String preparedCreateAllStatement(List<Entry<T>> creates, String tableName, Entry<FK> foreignKey) {
@@ -95,19 +113,25 @@ public class QueryBuilderImpl implements QueryBuilder {
             String tableName,
             Entry<FK> foreignKey
     ) {
-        val start = "\ndelete from " + tableName
-                + "\n\twhere " + foreignKey.getName() + " = :" + foreignKey.getName();
-        val inValueName = deletes.size() > 0 ? deletes.get(0).getName() : "";
+        val start = "\ndelete from " + tableName;
+        val middle = Objects.nonNull(foreignKey.getName())
+                ? "\n\twhere " + foreignKey.getName() + " = :" + foreignKey.getName()
+                : "";
+        final String end;
 
-        val middle = IntStream
-                .range(0, deletes.size())
-                .mapToObj(i -> {
-                    val entry = deletes.get(i);
+        if (deletes.size() > 0) {
+            end = IntStream
+                    .range(0, deletes.size())
+                    .mapToObj(i -> {
+                        val entry = deletes.get(i);
 
-                    return "\n\t\t" + ":" + entry.getName() + i;
-                })
-                .collect(Collectors.joining(", ", " and " + inValueName + " in (", "\n\t)"));
-        return start + middle;
+                        return "\n\t\t" + ":" + entry.getName() + i;
+                    })
+                    .collect(Collectors.joining(", ", " and " + deletes.get(0).getName() + " in (", "\n\t)"));
+        } else {
+            end = "";
+        }
+        return start + middle + end;
     }
 
     private String preparedUpdateStatement(EntityUpdates updates, String tableName, long id) {
