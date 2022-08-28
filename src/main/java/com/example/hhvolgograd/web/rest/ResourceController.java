@@ -2,6 +2,7 @@ package com.example.hhvolgograd.web.rest;
 
 import com.example.hhvolgograd.persistance.db.model.User;
 import com.example.hhvolgograd.web.service.ResourceService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.turkraft.springfilter.boot.Filter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -81,9 +83,34 @@ public class ResourceController {
             JsonNode patch,
             @PathVariable int id
     ) {
-        service.updateUser(patch, id);
+        val updatesCount = service.updateUser(patch, id);
+        return updatesCount == 1
+                ? ResponseEntity.ok("The user is updated.")
+                : ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/user/{user-id}/updating/phones", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @Operation(summary = "updates user phones. Path id and grant scope id must match")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Parameter(in = ParameterIn.PATH, name = "user-id", schema = @Schema(type = "integer"))
+    public ResponseEntity<String> updatePhones(
+            @RequestBody
+            Map<String, String> changes,
+            @PathVariable(name = "user-id") int userId
+    ) {
+        service.updatePhones(changes, userId);
+        return ResponseEntity.ok("Phones are updated");
+    }
+
+    @DeleteMapping(value = "/user/{user-id}/delete/phones", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "updates user phones. Path id and grant scope id must match")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Parameter(in = ParameterIn.PATH, name = "user-id", schema = @Schema(type = "integer"))
+    public ResponseEntity<String> deletePhones(@PathVariable(name = "user-id") int userId) {
+        service.deletePhones(userId);
         return ResponseEntity
-                .ok("The user is updated.");
+                .status(HttpStatus.NO_CONTENT)
+                .body("Phones are successfully deleted");
     }
 
 }
