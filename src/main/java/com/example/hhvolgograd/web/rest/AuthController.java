@@ -1,8 +1,8 @@
 package com.example.hhvolgograd.web.rest;
 
 import com.example.hhvolgograd.persistence.db.model.User;
-import com.example.hhvolgograd.web.service.LoginService;
-import com.example.hhvolgograd.web.service.RegistrationService;
+import com.example.hhvolgograd.web.service.auth.LoginService;
+import com.example.hhvolgograd.web.service.auth.RegistrationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

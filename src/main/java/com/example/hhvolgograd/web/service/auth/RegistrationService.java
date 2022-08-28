@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service;
+package com.example.hhvolgograd.web.service.auth;
 
 import com.example.hhvolgograd.persistence.db.model.User;
 

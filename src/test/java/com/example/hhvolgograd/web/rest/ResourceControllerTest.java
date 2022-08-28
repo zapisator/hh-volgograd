@@ -1,6 +1,6 @@
 package com.example.hhvolgograd.web.rest;
 
-import com.example.hhvolgograd.web.service.ResourceService;
+import com.example.hhvolgograd.web.service.resource.ResourceService;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;
 import lombok.val;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.security;
+package com.example.hhvolgograd.web.security.token;
 
 public interface TokenGenerator {
 

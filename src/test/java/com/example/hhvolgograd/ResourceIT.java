@@ -7,7 +7,7 @@ import com.example.hhvolgograd.persistence.db.repository.PhoneRepository;
 import com.example.hhvolgograd.persistence.db.repository.UserRepository;
 import com.example.hhvolgograd.persistence.db.service.DbCashService;
 import com.example.hhvolgograd.web.rest.ResourceController;
-import com.example.hhvolgograd.web.service.ResourceServiceImpl;
+import com.example.hhvolgograd.web.service.resource.ResourceServiceImpl;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;

@@ -7,6 +7,7 @@ import com.example.hhvolgograd.persistence.db.service.CashService;
 import com.example.hhvolgograd.persistence.grid.service.HazelcastFactory;
 import com.example.hhvolgograd.persistence.grid.service.HazelcastMapService;
 import com.example.hhvolgograd.persistence.grid.service.HazelcastMapServiceType;
+import com.example.hhvolgograd.web.service.auth.RegistrationServiceImpl;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

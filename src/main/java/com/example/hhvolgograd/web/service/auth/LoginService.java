@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service;
+package com.example.hhvolgograd.web.service.auth;
 
 public interface LoginService {
     void login(String email);

@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.security;
+package com.example.hhvolgograd.web.security.token;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service;
+package com.example.hhvolgograd.web.service.auth;
 
 import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.mail.service.MailService;
@@ -6,8 +6,8 @@ import com.example.hhvolgograd.persistence.db.service.CashService;
 import com.example.hhvolgograd.persistence.grid.service.HazelcastFactory;
 import com.example.hhvolgograd.persistence.grid.service.HazelcastMapService;
 import com.example.hhvolgograd.web.security.Scope;
-import com.example.hhvolgograd.web.security.TokenGenerator;
-import com.example.hhvolgograd.web.security.TokenParameter;
+import com.example.hhvolgograd.web.security.token.TokenGenerator;
+import com.example.hhvolgograd.web.security.token.TokenParameter;
 import lombok.val;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,9 @@
 package com.example.hhvolgograd.web.rest;
 
 import com.example.hhvolgograd.configuration.JwtProperty;
-import com.example.hhvolgograd.web.security.TokenParameter;
-import com.example.hhvolgograd.web.security.TokenService;
-import com.example.hhvolgograd.web.service.ResourceService;
+import com.example.hhvolgograd.web.security.token.TokenParameter;
+import com.example.hhvolgograd.web.security.token.TokenService;
+import com.example.hhvolgograd.web.service.resource.ResourceService;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;
 import lombok.val;
 import org.junit.jupiter.api.Test;

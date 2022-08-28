@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service;
+package com.example.hhvolgograd.web.service.resource;
 
 import com.example.hhvolgograd.persistence.db.model.User;
 import com.fasterxml.jackson.databind.JsonNode;

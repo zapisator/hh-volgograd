@@ -1,7 +1,7 @@
 package com.example.hhvolgograd.web.rest;
 
 import com.example.hhvolgograd.persistence.db.model.User;
-import com.example.hhvolgograd.web.service.ResourceService;
+import com.example.hhvolgograd.web.service.resource.ResourceService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.turkraft.springfilter.boot.Filter;
 import io.swagger.v3.oas.annotations.Operation;
