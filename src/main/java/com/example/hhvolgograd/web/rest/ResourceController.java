@@ -18,7 +18,6 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -28,10 +27,13 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.String.format;
 
 
 @RestController
@@ -84,6 +86,7 @@ public class ResourceController {
             @PathVariable int id
     ) {
         val updatesCount = service.updateUser(patch, id);
+
         return updatesCount == 1
                 ? ResponseEntity.ok("The user is updated.")
                 : ResponseEntity.noContent().build();
@@ -94,23 +97,27 @@ public class ResourceController {
     @SecurityRequirement(name = "Bearer Authentication")
     @Parameter(in = ParameterIn.PATH, name = "user-id", schema = @Schema(type = "integer"))
     public ResponseEntity<String> updatePhones(
-            @RequestBody
+            @RequestParam(required = false)
             Map<String, String> changes,
             @PathVariable(name = "user-id") int userId
     ) {
-        service.updatePhones(changes, userId);
-        return ResponseEntity.ok("Phones are updated");
+        val updatesCount = service.updatePhones(changes, userId);
+
+        return updatesCount > 0
+                ? ResponseEntity.ok(format("%s phones were updated", updatesCount))
+                : ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value = "/user/{user-id}/delete/phones", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/user/{user-id}/deleting/phones")
     @Operation(summary = "updates user phones. Path id and grant scope id must match")
     @SecurityRequirement(name = "Bearer Authentication")
     @Parameter(in = ParameterIn.PATH, name = "user-id", schema = @Schema(type = "integer"))
     public ResponseEntity<String> deletePhones(@PathVariable(name = "user-id") int userId) {
-        service.deletePhones(userId);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body("Phones are successfully deleted");
+        val deletesCount = service.deletePhones(userId);
+
+        return deletesCount > 0
+                ? ResponseEntity.ok(format("%s pones were successfully deleted", deletesCount))
+                : ResponseEntity.noContent().build();
     }
 
 }
