@@ -3,12 +3,14 @@ package com.example.hhvolgograd;
 import com.example.hhvolgograd.persistance.db.model.Phone;
 import com.example.hhvolgograd.persistance.db.model.Profile;
 import com.example.hhvolgograd.persistance.db.model.User;
+import com.example.hhvolgograd.persistance.db.repository.PhoneRepository;
 import com.example.hhvolgograd.persistance.db.repository.UserRepository;
 import com.example.hhvolgograd.persistance.db.service.DbCashService;
 import com.example.hhvolgograd.web.rest.ResourceController;
 import com.example.hhvolgograd.web.service.ResourceServiceImpl;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;
 import lombok.val;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,20 +32,23 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.example.hhvolgograd.TestUtils.randomStringWithNonZeroLength;
+import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DataJpaTest
 @ContextConfiguration(initializers = {ResourceIT.DockerPostgresDataSourceInitializer.class})
-//@Import({NativeSqlUserRepositoryImpl.class, QueryBuilderImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 public class ResourceIT {
@@ -57,6 +63,8 @@ public class ResourceIT {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PhoneRepository phoneRepository;
     private MockMvc mockMvc;
 
     static class DockerPostgresDataSourceInitializer
@@ -76,9 +84,11 @@ public class ResourceIT {
 
     @BeforeEach
     public void setUp() {
-        val cashService = new DbCashService(userRepository);
+        val cashService = new DbCashService(userRepository, phoneRepository);
         val resourceService = new ResourceServiceImpl(cashService);
         val resourceController = new ResourceController(resourceService);
+
+        fillTheDb();
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(resourceController)
@@ -87,6 +97,83 @@ public class ResourceIT {
                         new SpecificationFilterArgumentResolver()
                 )
                 .build();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        userRepository.deleteAll();
+        phoneRepository.deleteAll();
+    }
+
+    @Test
+    public void twentyConsecutivelyNumberedUsers_updateNameAgeWithNull_statusOk() throws Exception {
+        val users = userRepository.findAll();
+        val id = users.get(nextInt(0, users.size())).getId();
+        val path = "/resource/user/" + id + "/updating";
+        val patchString = patchString(
+                List.of(
+                        new String[]{"\"replace\"", "\"/name\"", null},
+                        new String[]{"\"replace\"", "\"/age\"", null}
+                )
+        );
+
+        mockMvc
+                .perform(
+                        patch(URI.create(path))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(patchString)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void twentyConsecutivelyNumberedUsers_updateNameAgeEmail_statusOk() throws Exception {
+        val users = userRepository.findAll();
+        val id = users.get(nextInt(0, users.size())).getId();
+        val path = "/resource/user/" + id + "/updating";
+        val patchString = patchString(
+                List.of(
+                        new String[]{"\"replace\"", "\"/name\"", "\"eman\""},
+                        new String[]{"\"replace\"", "\"/age\"", "2"},
+                        new String[]{"\"replace\"", "\"/email\"", "\"b@marrou.com\""}
+                )
+        );
+
+        mockMvc
+                .perform(
+                        patch(URI.create(path))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(patchString)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void twentyConsecutivelyNumberedUsers_updateNameAgeEmail_WithWrongUserId_statusNoContent() throws Exception {
+        val id = userRepository
+                .findAll()
+                .stream()
+                .map(User::getId)
+                .map(Long::intValue)
+                .max(Integer::compareTo)
+                .orElseThrow()
+                + 1;
+        val path = "/resource/user/" + id + "/updating";
+        val patchString = patchString(
+                List.of(
+                        new String[]{"\"replace\"", "\"/name\"", "\"eman\""},
+                        new String[]{"\"replace\"", "\"/age\"", "2"},
+                        new String[]{"\"replace\"", "\"/email\"", "\"b@marrou.com\""}
+                )
+        );
+
+        mockMvc
+                .perform(
+                        patch(URI.create(path))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(patchString)
+                )
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -99,18 +186,16 @@ public class ResourceIT {
         val query = "?"
                 + "filter= id:" + requiredId + " or (age > " + ageGreaterThan + " and age < " + ageLessThan + ")";
 
-        fillTheDb();
-
         mockMvc
                 .perform(get(path + query))
                 .andExpect(status().isOk())
                 .andExpect(
                         jsonPath("$[*]", hasItem(new LambdaMatcher<>(expressionResult -> {
                             val map = (Map<String, Object>) expressionResult;
-                            val id = (int)map.get("id");
-                            val age = (int)map.get("age");
+                            val id = (int) map.get("id");
+                            val age = (int) map.get("age");
 
-                            return id == requiredId || (age > ageGreaterThan && age < ageLessThan );
+                            return id == requiredId || (age > ageGreaterThan && age < ageLessThan);
                         }, "id == " + requiredId
                                 + " or (age > " + ageGreaterThan + " && age < " + ageLessThan + ")")))
                 );
@@ -122,8 +207,6 @@ public class ResourceIT {
         val pageSize = 19;
         val query = "?"
                 + "size=" + pageSize;
-
-        fillTheDb();
 
         mockMvc
                 .perform(get(path + query))
@@ -139,8 +222,6 @@ public class ResourceIT {
         val query = "?" + randomStringWithNonZeroLength();
         val defaultNumberOfUsers = 3;
 
-        fillTheDb();
-
         mockMvc
                 .perform(get(path + query))
                 .andExpect(status().isOk())
@@ -150,8 +231,9 @@ public class ResourceIT {
     }
 
     private void fillTheDb() {
+        val count = 20;
         val users = Stream.iterate(0, n -> n + 1)
-                .limit(20)
+                .limit(count)
                 .map(this::testUser)
                 .collect(Collectors.toList());
 
@@ -166,5 +248,27 @@ public class ResourceIT {
         return user
                 .userWithPhone(phone)
                 .userWithProfile(profile);
+    }
+
+    private String patchString(List<String[]> members) {
+        val operationIndex = 0;
+        val pathIndex = 1;
+        val valueIndex = 2;
+
+        return members
+                .stream()
+                .map(member -> member[operationIndex].equals("remove")
+                        ? removeMember(member[operationIndex], member[pathIndex])
+                        : addAndReplaceMember(member[operationIndex], member[pathIndex], member[valueIndex])
+                )
+                .collect(Collectors.joining(", \n", "[\n", "\n]"));
+    }
+
+    private String addAndReplaceMember(String operation, String path, String value) {
+        return "\t{ \"op\": " + operation + ", \"path\":" + path + ", \"value\":" + value + " }";
+    }
+
+    private String removeMember(String operation, String path) {
+        return "{ \"op\": " + operation + ", \"path\":" + path + " }";
     }
 }
