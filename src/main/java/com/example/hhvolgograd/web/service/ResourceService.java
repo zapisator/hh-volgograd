@@ -15,7 +15,7 @@ public interface ResourceService {
 
     int updateUser(JsonNode patch, long id);
 
-    void updatePhones(Map<String, String> changes, long userId);
+    int updatePhones(Map<String, String> changes, long userId);
 
-    void deletePhones(long userId);
+    int deletePhones(long userId);
 }

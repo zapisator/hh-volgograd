@@ -72,24 +72,23 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void updatePhones(Map<String, String> changes, long userId) {
+    public int updatePhones(Map<String, String> changes, long userId) {
         val creates = new ArrayList<Entry<String>>();
         val deletes = new ArrayList<Entry<String>>();
 
         changes.forEach((key, value) -> {
             if (Objects.nonNull(value)) {
                 creates.add(new Entry<>("value", value));
-            } else {
-                deletes.add(new Entry<>("value", key));
             }
+            deletes.add(new Entry<>("value", key));
         });
-        service.updatePhones(creates, deletes, userId);
+        return service.updatePhones(creates, deletes, userId);
     }
 
 
     @Override
-    public void deletePhones(long userId) {
-        service.deletePhonesBy(userId);
+    public int deletePhones(long userId) {
+        return service.deletePhonesBy(userId);
     }
 
 }
