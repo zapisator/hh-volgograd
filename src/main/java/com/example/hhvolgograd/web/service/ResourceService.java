@@ -6,15 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ResourceService {
 
 
     List<User> getUsers(Specification<User> specification, Pageable pageable);
 
-    void updateUser(JsonNode patch, long id);
+    int updateUser(JsonNode patch, long id);
 
-    void updatePhones(JsonNode patch, long userId);
+    void updatePhones(Map<String, String> changes, long userId);
 
     void deletePhones(long userId);
 }
