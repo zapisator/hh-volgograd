@@ -1,6 +1,6 @@
-package com.example.hhvolgograd.persistance.db.repository.custom;
+package com.example.hhvolgograd.persistence.db.repository.custom;
 
-import com.example.hhvolgograd.persistance.db.model.dto.Entry;
+import com.example.hhvolgograd.persistence.db.model.dto.Entry;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.grid.service;
+package com.example.hhvolgograd.persistence.grid.service;
 
 import lombok.Getter;
 

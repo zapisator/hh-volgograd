@@ -1,6 +1,6 @@
 package com.example.hhvolgograd.web.rest;
 
-import com.example.hhvolgograd.persistance.db.model.User;
+import com.example.hhvolgograd.persistence.db.model.User;
 import com.example.hhvolgograd.web.service.LoginService;
 import com.example.hhvolgograd.web.service.RegistrationService;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.grid.service;
+package com.example.hhvolgograd.persistence.grid.service;
 
 import com.example.hhvolgograd.configuration.ProjectHazelcastProperty;
 import com.hazelcast.core.HazelcastInstance;

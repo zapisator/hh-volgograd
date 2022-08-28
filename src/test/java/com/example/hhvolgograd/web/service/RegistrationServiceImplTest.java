@@ -2,11 +2,11 @@ package com.example.hhvolgograd.web.service;
 
 import com.example.hhvolgograd.TestUtils;
 import com.example.hhvolgograd.mail.service.MailService;
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.service.CashService;
-import com.example.hhvolgograd.persistance.grid.service.HazelcastFactory;
-import com.example.hhvolgograd.persistance.grid.service.HazelcastMapService;
-import com.example.hhvolgograd.persistance.grid.service.HazelcastMapServiceType;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.service.CashService;
+import com.example.hhvolgograd.persistence.grid.service.HazelcastFactory;
+import com.example.hhvolgograd.persistence.grid.service.HazelcastMapService;
+import com.example.hhvolgograd.persistence.grid.service.HazelcastMapServiceType;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

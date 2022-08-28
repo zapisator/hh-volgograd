@@ -1,11 +1,11 @@
 package com.example.hhvolgograd;
 
-import com.example.hhvolgograd.persistance.db.model.Phone;
-import com.example.hhvolgograd.persistance.db.model.Profile;
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.repository.PhoneRepository;
-import com.example.hhvolgograd.persistance.db.repository.UserRepository;
-import com.example.hhvolgograd.persistance.db.service.DbCashService;
+import com.example.hhvolgograd.persistence.db.model.Phone;
+import com.example.hhvolgograd.persistence.db.model.Profile;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.repository.PhoneRepository;
+import com.example.hhvolgograd.persistence.db.repository.UserRepository;
+import com.example.hhvolgograd.persistence.db.service.DbCashService;
 import com.example.hhvolgograd.web.rest.ResourceController;
 import com.example.hhvolgograd.web.service.ResourceServiceImpl;
 import com.turkraft.springfilter.boot.SpecificationFilterArgumentResolver;

@@ -1,11 +1,11 @@
 package com.example.hhvolgograd.web.service;
 
 import com.example.hhvolgograd.exception.PatchRequestException;
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.model.dto.Entry;
-import com.example.hhvolgograd.persistance.db.model.dto.UpdateProperties;
-import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
-import com.example.hhvolgograd.persistance.db.service.CashService;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.model.dto.Entry;
+import com.example.hhvolgograd.persistence.db.model.dto.UpdateProperties;
+import com.example.hhvolgograd.persistence.db.model.dto.UserUpdates;
+import com.example.hhvolgograd.persistence.db.service.CashService;
 import com.example.hhvolgograd.validation.patch.CommonValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;

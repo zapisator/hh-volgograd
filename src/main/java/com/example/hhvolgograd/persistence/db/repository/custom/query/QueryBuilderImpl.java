@@ -1,8 +1,8 @@
-package com.example.hhvolgograd.persistance.db.repository.custom.query;
+package com.example.hhvolgograd.persistence.db.repository.custom.query;
 
-import com.example.hhvolgograd.persistance.db.model.dto.EntityUpdates;
-import com.example.hhvolgograd.persistance.db.model.dto.Entry;
-import com.example.hhvolgograd.persistance.db.model.dto.UpdateProperties;
+import com.example.hhvolgograd.persistence.db.model.dto.EntityUpdates;
+import com.example.hhvolgograd.persistence.db.model.dto.Entry;
+import com.example.hhvolgograd.persistence.db.model.dto.UpdateProperties;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.hibernate.query.NativeQuery;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.example.hhvolgograd.persistance.db.model.dto.UserUpdates.type;
+import static com.example.hhvolgograd.persistence.db.model.dto.UserUpdates.type;
 import static java.util.Objects.isNull;
 
 @AllArgsConstructor

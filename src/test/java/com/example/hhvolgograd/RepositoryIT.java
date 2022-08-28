@@ -1,12 +1,12 @@
 package com.example.hhvolgograd;
 
-import com.example.hhvolgograd.persistance.db.model.Phone;
-import com.example.hhvolgograd.persistance.db.model.Profile;
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.model.dto.Entry;
-import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
-import com.example.hhvolgograd.persistance.db.repository.PhoneRepository;
-import com.example.hhvolgograd.persistance.db.repository.UserRepository;
+import com.example.hhvolgograd.persistence.db.model.Phone;
+import com.example.hhvolgograd.persistence.db.model.Profile;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.model.dto.Entry;
+import com.example.hhvolgograd.persistence.db.model.dto.UserUpdates;
+import com.example.hhvolgograd.persistence.db.repository.PhoneRepository;
+import com.example.hhvolgograd.persistence.db.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.example.hhvolgograd.persistance.db.model.User.MAX_AGE;
-import static com.example.hhvolgograd.persistance.db.model.User.MIN_AGE;
+import static com.example.hhvolgograd.persistence.db.model.User.MAX_AGE;
+import static com.example.hhvolgograd.persistence.db.model.User.MIN_AGE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomUtils.nextDouble;
 import static org.apache.commons.lang3.RandomUtils.nextInt;

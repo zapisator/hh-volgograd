@@ -1,8 +1,8 @@
-package com.example.hhvolgograd.persistance.db.repository.custom;
+package com.example.hhvolgograd.persistence.db.repository.custom;
 
-import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
-import com.example.hhvolgograd.persistance.db.repository.custom.query.QueryBuilder;
-import com.example.hhvolgograd.persistance.db.repository.custom.query.QueryBuilderImpl;
+import com.example.hhvolgograd.persistence.db.model.dto.UserUpdates;
+import com.example.hhvolgograd.persistence.db.repository.custom.query.QueryBuilder;
+import com.example.hhvolgograd.persistence.db.repository.custom.query.QueryBuilderImpl;
 import com.example.hhvolgograd.validation.javax.external.JavaxUserValidator;
 import lombok.AllArgsConstructor;
 import lombok.val;

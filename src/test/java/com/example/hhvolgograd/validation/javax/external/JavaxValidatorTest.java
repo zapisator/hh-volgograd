@@ -1,7 +1,7 @@
 package com.example.hhvolgograd.validation.javax.external;
 
 import com.example.hhvolgograd.TestUtils;
-import com.example.hhvolgograd.persistance.db.model.Phone;
+import com.example.hhvolgograd.persistence.db.model.Phone;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.db.model.dto;
+package com.example.hhvolgograd.persistence.db.model.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

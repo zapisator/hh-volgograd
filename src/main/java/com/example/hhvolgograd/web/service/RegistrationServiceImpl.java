@@ -1,10 +1,10 @@
 package com.example.hhvolgograd.web.service;
 
 import com.example.hhvolgograd.mail.service.MailService;
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.service.CashService;
-import com.example.hhvolgograd.persistance.grid.service.HazelcastFactory;
-import com.example.hhvolgograd.persistance.grid.service.HazelcastMapService;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.service.CashService;
+import com.example.hhvolgograd.persistence.grid.service.HazelcastFactory;
+import com.example.hhvolgograd.persistence.grid.service.HazelcastMapService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static com.example.hhvolgograd.persistance.grid.service.HazelcastMapServiceType.KEEPING_USER_SERVICE;
-import static com.example.hhvolgograd.persistance.grid.service.HazelcastMapServiceType.OTP_SERVICE;
+import static com.example.hhvolgograd.persistence.grid.service.HazelcastMapServiceType.KEEPING_USER_SERVICE;
+import static com.example.hhvolgograd.persistence.grid.service.HazelcastMapServiceType.OTP_SERVICE;
 import static java.util.Objects.requireNonNull;
 
 @Service

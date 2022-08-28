@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.db.model;
+package com.example.hhvolgograd.persistence.db.model;
 
 import com.example.hhvolgograd.exception.IncorrectJsonException;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

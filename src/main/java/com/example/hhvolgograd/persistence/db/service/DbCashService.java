@@ -1,11 +1,11 @@
-package com.example.hhvolgograd.persistance.db.service;
+package com.example.hhvolgograd.persistence.db.service;
 
 import com.example.hhvolgograd.exception.NotRegisteringUserException;
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.model.dto.Entry;
-import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
-import com.example.hhvolgograd.persistance.db.repository.PhoneRepository;
-import com.example.hhvolgograd.persistance.db.repository.UserRepository;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.model.dto.Entry;
+import com.example.hhvolgograd.persistence.db.model.dto.UserUpdates;
+import com.example.hhvolgograd.persistence.db.repository.PhoneRepository;
+import com.example.hhvolgograd.persistence.db.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.dao.DuplicateKeyException;
@@ -64,8 +64,14 @@ public class DbCashService implements CashService {
     }
 
     @Override
-    public void updatePhones() {
+    public void updatePhones(List<Entry<String>> creates, List<Entry<String>> deletes, long userId) {
+       val updatesCount = phoneRepository.deletePhonesByUserIdAndValues(userId, deletes);
+        phoneRepository.addPhonesByUserId(userId, creates);
+    }
 
+    @Override
+    public void deletePhonesBy(long userId) {
+//        phoneRepository.deleteAllByUserId(userId);
     }
 
     @Override

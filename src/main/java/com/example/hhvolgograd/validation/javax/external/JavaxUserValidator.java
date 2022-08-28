@@ -1,7 +1,7 @@
 package com.example.hhvolgograd.validation.javax.external;
 
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.model.dto.UserUpdates;
 import lombok.val;
 
 import java.util.HashSet;

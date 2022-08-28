@@ -1,7 +1,7 @@
-package com.example.hhvolgograd.persistance.db.repository;
+package com.example.hhvolgograd.persistence.db.repository;
 
-import com.example.hhvolgograd.persistance.db.model.User;
-import com.example.hhvolgograd.persistance.db.repository.custom.NativeSqlUserRepository;
+import com.example.hhvolgograd.persistence.db.model.User;
+import com.example.hhvolgograd.persistence.db.repository.custom.NativeSqlUserRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.stereotype.Repository;
 

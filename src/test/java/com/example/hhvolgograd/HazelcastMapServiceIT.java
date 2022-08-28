@@ -1,7 +1,7 @@
 package com.example.hhvolgograd;
 
 import com.example.hhvolgograd.exception.TooEarlyToContactServiceException;
-import com.example.hhvolgograd.persistance.grid.service.HazelcastMapServiceImpl;
+import com.example.hhvolgograd.persistence.grid.service.HazelcastMapServiceImpl;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.HazelcastInstance;

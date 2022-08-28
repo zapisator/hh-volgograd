@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.persistance.db.model.dto;
+package com.example.hhvolgograd.persistence.db.model.dto;
 
 import java.util.Collection;
 import java.util.Map;
