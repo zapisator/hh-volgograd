@@ -2,9 +2,12 @@ package com.example.hhvolgograd.persistance.db.service;
 
 import com.example.hhvolgograd.exception.NotRegisteringUserException;
 import com.example.hhvolgograd.persistance.db.model.User;
+import com.example.hhvolgograd.persistance.db.model.dto.Entry;
 import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
+import com.example.hhvolgograd.persistance.db.repository.PhoneRepository;
 import com.example.hhvolgograd.persistance.db.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -23,6 +27,7 @@ import static java.lang.String.format;
 public class DbCashService implements CashService {
 
     private final UserRepository userRepository;
+    private final PhoneRepository phoneRepository;
 
     @Override
     public void requireNoSuchEmailIsRegistered(String email) {
@@ -54,8 +59,8 @@ public class DbCashService implements CashService {
     }
 
     @Override
-    public void updateUser(UserUpdates updates, long id) {
-        userRepository.update(updates, id);
+    public int updateUser(UserUpdates updates, long id) {
+        return userRepository.update(updates, id);
     }
 
     @Override
