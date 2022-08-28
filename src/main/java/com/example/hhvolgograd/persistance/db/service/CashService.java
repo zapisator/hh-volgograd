@@ -1,11 +1,13 @@
 package com.example.hhvolgograd.persistance.db.service;
 
 import com.example.hhvolgograd.persistance.db.model.User;
+import com.example.hhvolgograd.persistance.db.model.dto.Entry;
 import com.example.hhvolgograd.persistance.db.model.dto.UserUpdates;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CashService {
@@ -20,9 +22,11 @@ public interface CashService {
 
     Page<User> findAll(Specification<User> specification, Pageable pageable);
 
-    void updateUser(UserUpdates updates, long id);
+    int updateUser(UserUpdates updates, long id);
 
-    void updatePhones();
+    void updatePhones(List<Entry<String>> creates, List<Entry<String>> deletes, long userId);
+
+    void deletePhonesBy(long userId);
 
     void updateProfile();
 

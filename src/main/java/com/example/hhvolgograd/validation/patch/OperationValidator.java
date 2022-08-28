@@ -1,4 +1,4 @@
-package com.example.hhvolgograd.web.service.patch.validation;
+package com.example.hhvolgograd.validation.patch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
