@@ -33,15 +33,18 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.example.hhvolgograd.TestUtils.randomStringWithNonZeroLength;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -102,11 +105,104 @@ public class ResourceIT {
     @AfterEach
     public void tearDown() {
         userRepository.deleteAll();
-        phoneRepository.deleteAll();
     }
 
     @Test
-    public void twentyConsecutivelyNumberedUsers_updateNameAgeWithNull_statusOk() throws Exception {
+    public void deletePhones_userWithoutPhones_deleteAllPhonesOfTheUser_noContent() throws Exception {
+        val user = userRepository
+                .findAll()
+                .stream()
+                .findFirst()
+                .orElseThrow();
+        val userId = user.getId();
+        val path = "/resource/user/" + userId + "/deleting/phones";
+
+        phoneRepository.deleteAllByUserId(user.getId());
+
+        mockMvc
+                .perform(
+                        delete(URI.create(path))
+                )
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void updatePhones_tenConsecutivelyNumberedUsersWithPhoneEach_deleteAllPhoneOfTheUser_ok() throws Exception {
+        val users = userRepository
+                .findAll()
+                .stream()
+                .limit(10)
+                .collect(Collectors.toList());
+        val user = users.get(nextInt(0, users.size()));
+        val userId = user.getId();
+        val userWithPhones = IntStream.range(0, 5)
+                .mapToObj(i -> new Phone(Long.toString(8_903_800_0100L + i * 100L)))
+                .map(user::userWithPhone)
+                .findFirst()
+                .orElseThrow();
+        val path = "/resource/user/" + userId + "/deleting/phones";
+
+        userRepository.save(userWithPhones);
+
+        mockMvc
+                .perform(
+                        delete(URI.create(path))
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updatePhones_tenConsecutivelyNumberedUsersWithPhoneEach_updatePhoneWithNull_ok() throws Exception {
+        val users = userRepository
+                .findAll()
+                .stream()
+                .limit(10)
+                .collect(Collectors.toList());
+        val phone = new Phone(Long.toString(8_903_000_00_00L));
+        val user = users.get(nextInt(0, users.size()))
+                .userWithPhone(phone);
+        val userId = user.getId();
+        val path = "/resource/user/" + userId + "/updating/phones";
+
+        userRepository.save(user);
+
+        mockMvc
+                .perform(
+                        patch(URI.create(path))
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .param(phone.getValue(), (String) null)
+                )
+                .andExpect(status().isOk());
+        System.out.println(Arrays.toString(userRepository.findUserByEmail(user.getEmail()).orElseThrow().getPhones().toArray()));
+    }
+
+    @Test
+    public void updatePhones_twentyConsecutivelyNumberedUsersWithPhoneEach_updatePhoneWithNewValue_ok() throws Exception {
+        val users = userRepository
+                .findAll()
+                .stream()
+                .limit(10)
+                .collect(Collectors.toList());
+        val phone = new Phone(Long.toString(8_903_000_00_00L));
+        val newPhoneValue = Long.toString(Long.parseLong(phone.getValue()) + 10L);
+        val user = users.get(nextInt(0, users.size()))
+                .userWithPhone(phone);
+        val userId = user.getId();
+        val path = "/resource/user/" + userId + "/updating/phones";
+
+        userRepository.save(user);
+
+        mockMvc
+                .perform(
+                        patch(URI.create(path))
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .param(phone.getValue(), newPhoneValue)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateUser_twentyConsecutivelyNumberedUsers_updateNameAgeWithNull_statusOk() throws Exception {
         val users = userRepository.findAll();
         val id = users.get(nextInt(0, users.size())).getId();
         val path = "/resource/user/" + id + "/updating";
@@ -127,7 +223,7 @@ public class ResourceIT {
     }
 
     @Test
-    public void twentyConsecutivelyNumberedUsers_updateNameAgeEmail_statusOk() throws Exception {
+    public void updateUser_twentyConsecutivelyNumberedUsers_updateNameAgeEmail_statusOk() throws Exception {
         val users = userRepository.findAll();
         val id = users.get(nextInt(0, users.size())).getId();
         val path = "/resource/user/" + id + "/updating";
@@ -149,7 +245,7 @@ public class ResourceIT {
     }
 
     @Test
-    public void twentyConsecutivelyNumberedUsers_updateNameAgeEmail_WithWrongUserId_statusNoContent() throws Exception {
+    public void updateUser_twentyConsecutivelyNumberedUsers_updateNameAgeEmail_WithWrongUserId_statusNoContent() throws Exception {
         val id = userRepository
                 .findAll()
                 .stream()
@@ -178,7 +274,7 @@ public class ResourceIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void twentyConsecutivelyNumberedUsers_justFilter_correct() throws Exception {
+    public void list_twentyConsecutivelyNumberedUsers_justFilter_correct() throws Exception {
         val path = "/resource/users";
         val requiredId = 6;
         val ageGreaterThan = 2;
@@ -202,7 +298,7 @@ public class ResourceIT {
     }
 
     @Test
-    public void twentyConsecutivelyNumberedUsers_pageSize19_gives19users() throws Exception {
+    public void list_twentyConsecutivelyNumberedUsers_pageSize19_gives19users() throws Exception {
         val path = "/resource/users";
         val pageSize = 19;
         val query = "?"
@@ -217,7 +313,7 @@ public class ResourceIT {
     }
 
     @RepeatedTest(10)
-    public void twentyConsecutivelyNumberedUsers_unexpectedQuery_givesDefaultNumberOfUsers() throws Exception {
+    public void list_twentyConsecutivelyNumberedUsers_unexpectedQuery_givesDefaultNumberOfUsers() throws Exception {
         val path = "/resource/users";
         val query = "?" + randomStringWithNonZeroLength();
         val defaultNumberOfUsers = 3;
